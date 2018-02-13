@@ -8,6 +8,10 @@ collector:
       <% if roles %>
       roles: <%= roles %>
       <% end %>
+      key_processes:
+        <% key_processes.each do |process| %>
+        - <%= process %>
+        <% end %>
 load:
   plugin: snap-plugin-collector-psm
   task: task-psm.yaml

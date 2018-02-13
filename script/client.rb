@@ -7,13 +7,13 @@ class Client
 
   def initialize
     @hostname = `hostname`.chomp
-
-    self
   end
 
   def call
     unless scout_configuration["hostname"]
-      scout_configuration.merge!({ hostname: @hostname })
+      scout_configuration.merge!({
+        "hostname" => @hostname
+      })
     end
     scout_configuration
   end
