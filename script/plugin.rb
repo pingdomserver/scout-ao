@@ -1,7 +1,3 @@
-require 'net/http'
-require 'json'
-require 'uri'
-
 class Plugin < Struct.new(:name, :code, :config)
   PLUGIN_PATH = "#{ENV['HOME']}/scout-ao" #TODO: CHANGEME
 

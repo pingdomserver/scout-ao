@@ -1,3 +1,7 @@
+require 'net/http'
+require 'json'
+require 'uri'
+
 module Psm
   class ApiClient
     class << self
