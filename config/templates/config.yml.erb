@@ -1,0 +1,13 @@
+collector:
+  psm:
+    all:
+      scoutd_config_file: /etc/scout/scoutd.yml
+      account_key: <%= account_key %>
+      environment: <%= environment %>
+      hostname: <%= hostname %>
+      <% if roles %>
+      roles: <%= roles %>
+      <% end %>
+load:
+  plugin: snap-plugin-collector-psm
+  task: task-psm.yaml
