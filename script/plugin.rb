@@ -3,8 +3,7 @@ require 'json'
 require 'uri'
 
 class Plugin < Struct.new(:name, :code, :config)
-  def save
-  end
+  PLUGIN_PATH = "#{ENV['HOME']}/scout-ao" #TODO: CHANGEME
 
   class Downloader
     def initialize(client_configuration)
@@ -20,7 +19,7 @@ class Plugin < Struct.new(:name, :code, :config)
         c = Configuration.new(p["meta"]["options"])
         n = p["name"].downcase.gsub(/\s+/, '_')
         q = Plugin.new(n, p["code"], c)
-        # q.save
+        q.save
       end
     end
 
@@ -32,6 +31,23 @@ class Plugin < Struct.new(:name, :code, :config)
   class Configuration < Struct.new(:options)
   end
 
-  def save(name, options)
+  def save
+    %w(save_ruby_code save_configuraton).each do |m|
+      method(m).call
+    end
+  end
+
+  private
+
+  def save_ruby_code
+    save_file("#{name}.rb", code)
+  end
+
+  def save_configuraton
+    save_file("#{name}.yaml", config.options.to_yaml)
+  end
+
+  def save_file(name, content)
+    File.write("#{PLUGIN_PATH}/#{name}", content)
   end
 end
