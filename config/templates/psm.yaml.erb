@@ -1,17 +1,16 @@
 collector:
   psm:
     all:
-      scoutd_config_file: /etc/scout/scoutd.yml
       account_key: <%= account_key %>
       environment: <%= environment %>
       hostname: <%= hostname %>
       <% if roles %>
       roles: <%= roles %>
       <% end %>
-      key_processes:
-        <% key_processes.each do |process| %>
-        - <%= process %>
-        <% end %>
+      <% if key_processes.any? %>
+      key_processes: <%= key_processes.join(',') %>
+      <% end %>
+    
 load:
   plugin: snap-plugin-collector-psm
   task: task-psm.yaml
