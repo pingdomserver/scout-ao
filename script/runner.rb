@@ -16,6 +16,10 @@ class Runner
       client_configuration = Client.gather_facts
       Plugin::Downloader.new(client_configuration).call
       Configuration.new(client_configuration).call
+
+      # Restart appoptics agent
+
+      system "service appoptics-snapteld restart"
     end
   end
 end
