@@ -1,3 +1,5 @@
+require_relative './psm/api_client'
+
 class Plugin < Struct.new(:name, :code, :config)
   PLUGIN_PATH = "#{ENV['HOME']}/scout-ao" #TODO: CHANGEME
 
@@ -8,7 +10,7 @@ class Plugin < Struct.new(:name, :code, :config)
     end
 
     def call
-      client = Psm::ApiClient.new(account_key, hostname)
+      client = ::Psm::ApiClient.new(account_key, hostname)
       response = client.make_request("/api/v2/account/clients/plugins")
 
       response.each do |p|

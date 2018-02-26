@@ -2,4 +2,4 @@
 
 require_relative '../script/runner'
 
-Runner.run
+Runner.run ARGV.shift

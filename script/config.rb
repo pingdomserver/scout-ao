@@ -13,8 +13,9 @@ class Configuration
   end
 
   def call
+    binding.pry
     puts @erb_template.result(binding)
   end
 
-  attr_reader :account_key, :environment, :hostname, :roles
+  attr_reader :account_key, :environment, :hostname, :roles, :key_processes
 end
