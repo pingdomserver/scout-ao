@@ -1,7 +1,9 @@
 require_relative './psm/api_client'
 
+require 'fileutils'
+
 class Plugin < Struct.new(:name, :code, :config)
-  PLUGIN_PATH = "#{ENV['HOME']}/scout-ao" #TODO: CHANGEME
+  PLUGIN_PATH = "/opt/appoptics/opt/psm"
 
   class Downloader
     def initialize(client_configuration)
@@ -30,6 +32,7 @@ class Plugin < Struct.new(:name, :code, :config)
   end
 
   def save
+    ensure_directory_exists
     %w(save_ruby_code save_configuraton).each do |m|
       method(m).call
     end
@@ -47,5 +50,11 @@ class Plugin < Struct.new(:name, :code, :config)
 
   def save_file(name, content)
     File.write("#{PLUGIN_PATH}/#{name}", content)
+  end
+
+  def ensure_directory_exists
+    unless File.exists?(PLUGIN_PATH)
+      FileUtils.mkdir_p(PLUGIN_PATH)
+    end
   end
 end
