@@ -1,5 +1,9 @@
 #!/usr/bin/env ruby
 
 require_relative '../script/runner'
+require_relative '../script/options'
 
-Runner.run ARGV.shift
+ao_account_key = ARGV.shift
+opts = Options.parse(ARGV)
+
+Runner.run ao_account_key, opts
