@@ -3,6 +3,7 @@ require 'fileutils'
 
 class Configuration
   PSM_CONFIG_PATH = %(/opt/appoptics/etc/plugins.d/psm.yaml)
+  PSM_TASK_PATH = %(/opt/appoptics/etc/tasks.d/task-psm.yaml)
   STATSD_CONFIG_PATH = %(/opt/appoptics/etc/tasks.d/task-bridge-statsd.yaml)
   STATSD_BRIDGE_CONFIG_PATH = %(/opt/appoptics/etc/plugins.d/statsd.yaml)
 
@@ -10,11 +11,13 @@ class Configuration
     opts.each do |k,v|
       instance_variable_set :"@#{k}", v
     end
-    @agent_ruby_bin = %x(gem which scout | grep #{Runner::SCOUT_GEM_VERSION}).chomp
+    gem_location = %x(gem which scout | grep #{Runner::SCOUT_GEM_VERSION}).chomp
+    @agent_ruby_bin = gem_location.split('/')[0..-3].join('/') + "/bin/scout"
   end
 
   def call
     create_psm_config
+    create_psm_task
     create_statsd_config
     create_statsd_bridge_config
   end
@@ -27,6 +30,12 @@ class Configuration
   def create_psm_config
     File.write(PSM_CONFIG_PATH, erb_template(
       "../../config/templates/psm.yaml.erb"
+    ).result(binding))
+  end
+
+  def create_psm_task
+    File.write(PSM_TASK_PATH, erb_template(
+      "../../config/templates/psm-task.yaml.erb"
     ).result(binding))
   end
 
