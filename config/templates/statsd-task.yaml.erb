@@ -1,0 +1,25 @@
+# TODO: Separator (.), roles, environment tags
+# tags in task config.
+---
+version: 1
+schedule:
+  # Run every minute
+  type: cron
+  interval: "0 * * * * *"
+workflow:
+  collect:
+    metrics:
+      /statsd/*/all: {}
+    config:
+      /statsd/*/all:
+        # Report min, max, sum, count, stddev as a single measurement to the publisher
+        bridge_use_json_fields: true
+    tags:
+      /:
+        roles: <%= roles %>
+        environment: <%= environment %>
+    publish:
+      - plugin_name: publisher-appoptics
+        config:
+          period: 60
+          floor_seconds: 60
