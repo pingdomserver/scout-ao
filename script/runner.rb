@@ -8,6 +8,9 @@ require 'fileutils'
 class Runner
   class NoApiKeyException < StandardError; end;
 
+  SERVER_METRICS_GEM_VERSION = %(1.2.18)
+  SCOUT_GEM_VERSION = %(6.4.4)
+
   class << self
     def run(api_key, options)
       # TODO: API call to AO to enable psm snap plugin
@@ -22,16 +25,18 @@ class Runner
       Configuration.new(client_configuration).call unless options[:skip_config]
 
       # Install gems
+      unless options[:skip_gems]
+        system "gem install ./package/server_metrics-#{SERVER_METRICS_GEM_VERSION}.gem"
+        system "gem install ./package/scout-#{SCOUT_GEM_VERSION}.gem"
+      end
 
       # Install snap plugins
-
       %w(snap-plugin-collector-psm).each do |p|
         FileUtils.cp File.expand_path("../../package/#{p}", __FILE__),
           "/opt/appoptics/bin/#{p}"
       end
 
       # Restart appoptics agent
-
       system "service appoptics-snapteld restart"
     end
   end
