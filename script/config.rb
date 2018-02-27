@@ -1,5 +1,4 @@
 require 'erb'
-require 'pry'
 require 'fileutils'
 
 class Configuration
