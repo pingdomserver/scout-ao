@@ -4,13 +4,14 @@ collector:
       account_key: <%= account_key %>
       environment: <%= environment %>
       hostname: <%= hostname %>
+      agent_ruby_bin: <%= agent_ruby_bin %>
       <% if roles %>
       roles: <%= roles %>
       <% end %>
       <% if key_processes.any? %>
       key_processes: <%= key_processes.join(',') %>
       <% end %>
-    
+
 load:
   plugin: snap-plugin-collector-psm
   task: task-psm.yaml

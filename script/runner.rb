@@ -20,9 +20,6 @@ class Runner
       end
 
       Ao::Installer.call(api_key) unless options[:skip_agent]
-      client_configuration = Client.gather_facts
-      Plugin::Downloader.new(client_configuration).call unless options[:skip_plugin]
-      Configuration.new(client_configuration).call unless options[:skip_config]
 
       # Install gems
       unless options[:skip_gems]
@@ -35,6 +32,10 @@ class Runner
         FileUtils.cp File.expand_path("../../package/#{p}", __FILE__),
           "/opt/appoptics/bin/#{p}"
       end
+
+      client_configuration = Client.gather_facts
+      Plugin::Downloader.new(client_configuration).call unless options[:skip_plugin]
+      Configuration.new(client_configuration).call unless options[:skip_config]
 
       # Restart appoptics agent
       system "service appoptics-snapteld restart"

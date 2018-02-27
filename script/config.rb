@@ -11,6 +11,7 @@ class Configuration
     opts.each do |k,v|
       instance_variable_set :"@#{k}", v
     end
+    @agent_ruby_bin = %x(gem which scout | grep #{Runner::SCOUT_GEM_VERSION}).chomp
   end
 
   def call
@@ -19,7 +20,8 @@ class Configuration
     create_statsd_bridge_config
   end
 
-  attr_reader :account_key, :environment, :hostname, :roles, :key_processes
+  attr_reader :account_key, :environment, :hostname, :roles, :key_processes,
+    :agent_ruby_bin
 
   private
 
