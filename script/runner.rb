@@ -37,6 +37,12 @@ class Runner
       Plugin::Downloader.new(client_configuration).call unless options[:skip_plugin]
       Configuration.new(client_configuration).call unless options[:skip_config]
 
+      # Fix scout-related permissions
+      # (scout-client would be ran under appoptics user/group)
+      system "usermod -a -G scoutd appoptics"
+      system """chmod g+rw /var/log/scout/scoutd.log && \
+          chmod g+w /var/lib/scoutd/"""
+
       # Restart appoptics agent
       system "service appoptics-snapteld restart"
     end
