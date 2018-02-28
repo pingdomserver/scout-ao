@@ -18,6 +18,7 @@ workflow:
       /:
         roles: <%= roles %>
         environment: <%= environment %>
+        hostname: <%= hostname %>
     publish:
       - plugin_name: publisher-appoptics
         config:

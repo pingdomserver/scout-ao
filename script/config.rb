@@ -22,8 +22,12 @@ class Configuration
     create_statsd_bridge_config
   end
 
-  attr_reader :account_key, :environment, :hostname, :roles, :key_processes,
+  attr_reader :account_key, :environment, :hostname, :key_processes,
     :agent_ruby_bin
+
+  def roles
+    @roles.gsub(',', ' ')
+  end
 
   private
 
