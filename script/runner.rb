@@ -13,11 +13,12 @@ class Runner
 
   class << self
     def run(api_key, options)
-      # TODO: API call to AO to enable psm snap plugin
-
       unless api_key
         raise NoApiKeyException, "AppOptics Api key must be provided"
       end
+
+      # Stop scoutd (to release statsd port)
+      system "scoutctl stop"
 
       Ao::Installer.call(api_key) unless options[:skip_agent]
 
