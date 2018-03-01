@@ -38,6 +38,8 @@ class Plugin < Struct.new(:name, :code, :config)
 
   class Configuration < Struct.new(:options)
     def to_yaml
+      return unless options.any?
+
       options.inject({}) do |m, (k,v)|
         m[k] = v["value"] || v["default"]
         m
