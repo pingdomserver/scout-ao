@@ -35,6 +35,7 @@ class Runner
       end
 
       client_configuration = Client.gather_facts
+      client_configuration.merge!({ ao_token: api_key })
       Plugin::Downloader.new(client_configuration).call unless options[:skip_plugin]
       Configuration.new(client_configuration).call unless options[:skip_config]
 
