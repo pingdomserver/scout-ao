@@ -28,6 +28,12 @@ class Plugin < Struct.new(:name, :code, :config)
     private
 
     attr_reader :account_key, :hostname
+
+    def ensure_directory_exists
+      unless File.exists?(PLUGIN_PATH)
+        FileUtils.mkdir_p(PLUGIN_PATH)
+      end
+    end
   end
 
   class Configuration < Struct.new(:options)
@@ -46,16 +52,10 @@ class Plugin < Struct.new(:name, :code, :config)
   end
 
   def save_configuraton
-    save_file("#{name}.yaml", config.options.to_yaml)
+    save_file("#{name}.yml", config.options.to_yaml)
   end
 
   def save_file(name, content)
     File.write("#{PLUGIN_PATH}/#{name}", content)
-  end
-
-  def ensure_directory_exists
-    unless File.exists?(PLUGIN_PATH)
-      FileUtils.mkdir_p(PLUGIN_PATH)
-    end
   end
 end
