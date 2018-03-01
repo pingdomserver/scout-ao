@@ -5,8 +5,8 @@ require 'uri'
 module Psm
   class ApiClient
     class << self
-      def production?
-        ENV['RACK_ENV'] == 'production'
+      def development?
+        ENV['RACK_ENV'] == 'development'
       end
 
       def staging?
@@ -14,12 +14,12 @@ module Psm
       end
     end
 
-    API_HOST = if production?
-      "http://server.pingdom.com"
+    API_HOST = if development?
+      "http://localhost:3000"
     elsif staging?
       "http://staging.server.pingdom.com"
     else
-      "http://localhost:3000"
+      "http://server.pingdom.com"
     end
 
     def initialize(account_key, hostname)

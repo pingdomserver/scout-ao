@@ -37,6 +37,12 @@ class Plugin < Struct.new(:name, :code, :config)
   end
 
   class Configuration < Struct.new(:options)
+    def to_yaml
+      options.inject({}) do |m, (k,v)|
+        m[k] = v["value"] || v["default"]
+        m
+      end.to_yaml
+    end
   end
 
   def save
@@ -52,7 +58,7 @@ class Plugin < Struct.new(:name, :code, :config)
   end
 
   def save_configuraton
-    save_file("#{name}.yml", config.options.to_yaml)
+    save_file("#{name}.yml", config.to_yaml)
   end
 
   def save_file(name, content)
