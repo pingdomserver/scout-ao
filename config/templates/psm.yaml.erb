@@ -11,6 +11,7 @@ collector:
       <% if key_processes.any? %>
       key_processes: <%= key_processes.join(',') %>
       <% end %>
+      plugin_directory: /opt/appoptics/opt/psm
 
 load:
   plugin: snap-plugin-collector-psm

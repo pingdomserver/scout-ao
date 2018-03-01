@@ -12,6 +12,8 @@ class Plugin < Struct.new(:name, :code, :config)
     end
 
     def call
+      ensure_directory_exists
+
       client = ::Psm::ApiClient.new(account_key, hostname)
       response = client.make_request("/api/v2/account/clients/plugins")
 
@@ -32,7 +34,6 @@ class Plugin < Struct.new(:name, :code, :config)
   end
 
   def save
-    ensure_directory_exists
     %w(save_ruby_code save_configuraton).each do |m|
       method(m).call
     end
