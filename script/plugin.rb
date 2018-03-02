@@ -19,7 +19,7 @@ class Plugin < Struct.new(:name, :code, :config)
 
       response.each do |p|
         c = Configuration.new(p["meta"]["options"])
-        n = p["name"].downcase.gsub(/\s+/, '_')
+        n = "#{normalize_plugin_name(p['name'])}-#{p['id']}"
         q = Plugin.new(n, p["code"], c)
         q.save
       end
@@ -33,6 +33,10 @@ class Plugin < Struct.new(:name, :code, :config)
       unless File.exists?(PLUGIN_PATH)
         FileUtils.mkdir_p(PLUGIN_PATH)
       end
+    end
+
+    def normalize_plugin_name(name)
+      name.downcase.gsub(/\W/, ' ').split.join(" ").gsub(/\s/, '_')
     end
   end
 
