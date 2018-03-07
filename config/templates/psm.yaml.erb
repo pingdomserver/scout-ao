@@ -2,8 +2,12 @@ collector:
   psm:
     all:
       account_key: <%= account_key %>
+      <% if environment %>
       environment: <%= environment %>
+      <% end %>
+      <% if hostname %>
       hostname: <%= hostname %>
+      <% end %>
       agent_ruby_bin: <%= agent_ruby_bin %>
       <% if roles %>
       roles: <%= roles %>
