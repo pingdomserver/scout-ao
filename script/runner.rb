@@ -24,8 +24,10 @@ class Runner
 
       # Install gems
       unless options[:skip_gems]
-        system "gem install ./package/server_metrics-#{SERVER_METRICS_GEM_VERSION}.gem"
-        system "gem install ./package/scout-#{SCOUT_GEM_VERSION}.gem"
+        ["server_metrics-#{SERVER_METRICS_GEM_VERSION}.gem", "scout-#{SCOUT_GEM_VERSION}.gem"].each do |gem|
+          gem_path = File.expand_path("../../package/#{gem}", __FILE__)
+          system "gem install #{gem_path}"
+        end
       end
 
       # Install snap plugins
