@@ -30,12 +30,6 @@ class Runner
         end
       end
 
-      # Install snap plugins
-      %w(snap-plugin-collector-psm).each do |p|
-        FileUtils.cp File.expand_path("../../package/#{p}", __FILE__),
-          "/opt/appoptics/bin/#{p}"
-      end
-
       client_configuration = Client.gather_facts
       client_configuration.merge!({ ao_token: api_key })
       Plugin::Downloader.new(client_configuration).call unless options[:skip_plugin]
@@ -49,6 +43,8 @@ class Runner
 
       # Restart appoptics agent
       system "service appoptics-snapteld restart"
+
+      puts "\nOk."
     end
   end
 end
