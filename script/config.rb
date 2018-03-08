@@ -3,7 +3,7 @@ require 'fileutils'
 
 class Configuration
   PSM_CONFIG_PATH = %(/opt/appoptics/etc/plugins.d/psm.yaml)
-  PSM_TASK_PATH = %(/opt/appoptics/etc/tasks.d/task-psm.yaml)
+  PSM_TASK_PATH = %(/opt/appoptics/etc/tasks.d/task-aopsm.yaml)
   STATSD_CONFIG_PATH = %(/opt/appoptics/etc/tasks.d/task-bridge-statsd.yaml)
   STATSD_BRIDGE_CONFIG_PATH = %(/opt/appoptics/etc/plugins.d/statsd.yaml)
   AO_AGENT_CONFIGURATION_PATH = %(/opt/appoptics/etc/config.yaml)
@@ -41,7 +41,7 @@ class Configuration
 
   def create_psm_task
     File.write(PSM_TASK_PATH, erb_template(
-      "../../config/templates/psm-task.yaml.erb"
+      "../../config/templates/task-aopsm.yaml.erb"
     ).result(binding))
   end
 

@@ -22,7 +22,7 @@ APPOPTICS_CONF="${INSTALL_DIR}/etc/config.yaml"
 SNAP_SERVICE_NAME=appoptics-snapteld
 AGENT_DISPLAY_NAME="AppOptics Host Agent"
 PACKAGE_NAME=appoptics-snaptel
-if [ $AO_ENV -eq 'staging' ]
+if [ "$AO_ENV" == 'staging' ]
 then
   PACKAGECLOUD_REPO=appoptics-snap-staging
 else
