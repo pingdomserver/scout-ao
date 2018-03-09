@@ -18,7 +18,7 @@ class Plugin < Struct.new(:name, :code, :config)
       response = client.make_request("/api/v2/account/clients/plugins")
 
       response.each do |p|
-        c = Configuration.new(p["meta"]["options"])
+        c = Configuration.new(p["meta"]["options"]) if p["meta"]
         n = "#{normalize_plugin_name(p['name'])}"
         q = Plugin.new(n, p["code"], c)
         q.save
