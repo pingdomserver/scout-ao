@@ -19,7 +19,7 @@ class Plugin < Struct.new(:name, :code, :config)
 
       response.each do |p|
         c = Configuration.new(p["meta"]["options"])
-        n = "#{normalize_plugin_name(p['name'])}-#{p['id']}"
+        n = "#{normalize_plugin_name(p['name'])}"
         q = Plugin.new(n, p["code"], c)
         q.save
       end
