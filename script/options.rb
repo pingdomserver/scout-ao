@@ -20,6 +20,10 @@ class Options
       o.on("--no-gems") do |g|
         opts[:skip_gems] = true
       end
+
+      o.on("--copy-agent") do |a|
+        opts[:copy_agent] = true
+      end
     end
     parser.parse!(args)
 

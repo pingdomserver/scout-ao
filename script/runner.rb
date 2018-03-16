@@ -22,7 +22,7 @@ class Runner
       # Stop Appoptics
       system "service appoptics-snapteld stop"
 
-      Ao::Installer.call(api_key) unless options[:skip_agent]
+      Ao::Installer.call(api_key, options) unless options[:skip_agent]
 
       # Install gems
       unless options[:skip_gems]
