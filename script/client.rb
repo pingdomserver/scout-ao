@@ -11,11 +11,6 @@ class Client
   end
 
   def call
-    unless scout_configuration["hostname"]
-      scout_configuration.merge!({
-        "hostname" => @hostname
-      })
-    end
     key_processes = fetch_key_processes
     scout_configuration.merge!(key_processes)
   end
