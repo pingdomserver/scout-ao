@@ -19,6 +19,8 @@ class Runner
 
       # Stop scoutd (to release statsd port)
       system "scoutctl stop"
+      # Stop Appoptics
+      system "service appoptics-snapteld stop"
 
       Ao::Installer.call(api_key) unless options[:skip_agent]
 
