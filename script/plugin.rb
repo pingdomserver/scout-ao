@@ -8,7 +8,8 @@ class Plugin < Struct.new(:name, :code, :config)
   class Downloader
     def initialize(client_configuration)
       @account_key = client_configuration.fetch("account_key")
-      @hostname = client_configuration.fetch("hostname")
+      hostname = %x(hostname).chomp
+      @hostname = client_configuration.fetch("hostname", hostname)
     end
 
     def call

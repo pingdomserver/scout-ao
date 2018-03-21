@@ -28,7 +28,11 @@ class Configuration
     :agent_ruby_bin, :ao_token
 
   def roles
-    @roles.gsub(',', ' ') if @roles
+    if @roles
+      @roles.gsub(',', ' ')
+    else
+      @api_roles.join(' ')
+    end
   end
 
   private

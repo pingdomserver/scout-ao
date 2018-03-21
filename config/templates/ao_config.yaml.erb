@@ -52,7 +52,7 @@ control:
           token: <%= ao_token %>
           url: "https://api.appoptics.com/v1/measurements"
           # Set this option if you want a different "host" tag to be associated with the metrics you report.
-          <% if hostname.present?  && !hostname.empty? %>
+          <% if !hostname.nil?  && !hostname.empty? %>
           hostname_alias: <%= hostname %>
           <% end %>
 

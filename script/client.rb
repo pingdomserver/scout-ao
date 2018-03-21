@@ -12,6 +12,9 @@ class Client
 
   def call
     key_processes = fetch_key_processes
+    client_roles = fetch_client_roles
+
+    scout_configuration.merge!(client_roles)
     scout_configuration.merge!(key_processes)
   end
 
@@ -34,8 +37,23 @@ class Client
   end
 
   def fetch_key_processes
-    client = Psm::ApiClient.new(account_key, hostname)
-    response = client.make_request('/api/v2/account/clients/processes')
+    response = api_client.make_request('/api/v2/account/clients/processes')
     { key_processes: response.map { |p| p["name"] } }
+  end
+
+  def fetch_client_roles
+    roles = {}
+
+    response = api_client.make_request('/api/v2/account/clients/roles')
+    response.reject! { |r| r["name"] == "All Servers" }
+    response.map! { |r| r["name"].gsub(/(\s+|\W+)/, '_') }
+
+    roles.merge!({ api_roles: response }) if response.any?
+
+    roles
+  end
+
+  def api_client
+    @client ||= Psm::ApiClient.new(account_key, hostname)
   end
 end
