@@ -1,0 +1,28 @@
+---
+version: 1
+
+schedule:
+  type: cron
+  interval: "0 * * * * *"
+
+workflow:
+  collect:
+    metrics:
+      /psm/*: {}
+      /system/*: {}
+    tags:
+      /:
+        <% if roles %>
+        roles: <%= roles %>
+        <% end %>
+        <% if environment %>
+        environment: <%= environment %>
+        <% end %>
+        <% if hostname %>
+        hostname: <%= hostname %>
+        <% end %>
+    publish:
+      - plugin_name: publisher-appoptics
+        config:
+          period: 60
+          floor_seconds: 60
