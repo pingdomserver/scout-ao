@@ -16,15 +16,17 @@ class Configuration
     @agent_ruby_bin = gem_location.split('/')[0..-3].join('/') + "/bin/scout"
   end
 
-  def call
+  def call(options)
     create_psm_config
     create_psm_task
-    create_statsd_config
-    create_statsd_bridge_config
+    unless options[:skip_statsd]
+      create_statsd_config
+      create_statsd_bridge_config
+    end
     update_ao_agent_configuration
   end
 
-  attr_reader :account_key, :environment, :hostname, :key_processes,
+  attr_reader :account_key, :hostname, :key_processes,
     :agent_ruby_bin, :ao_token
 
   def roles
@@ -33,6 +35,10 @@ class Configuration
     else
       @api_roles.join(' ')
     end
+  end
+
+  def environment
+    @environment || 'production'
   end
 
   private

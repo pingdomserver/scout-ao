@@ -35,7 +35,7 @@ class Runner
       client_configuration = Client.gather_facts
       client_configuration.merge!({ ao_token: api_key })
       Plugin::Downloader.new(client_configuration).call unless options[:skip_plugin]
-      Configuration.new(client_configuration).call unless options[:skip_config]
+      Configuration.new(client_configuration).call(options) unless options[:skip_config]
 
       # Fix scout-related permissions
       # (scout-client would be ran under appoptics user/group)

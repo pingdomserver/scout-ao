@@ -16,9 +16,15 @@ workflow:
         bridge_use_json_fields: true
     tags:
       /:
+        <% if roles %>
         roles: <%= roles %>
+        <% end %>
+        <% if environment %>
         environment: <%= environment %>
+        <% end %>
+        <% if hostname %>
         hostname: <%= hostname %>
+        <% end %>
     publish:
       - plugin_name: publisher-appoptics
         config:

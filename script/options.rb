@@ -24,6 +24,10 @@ class Options
       o.on("--copy-agent") do |a|
         opts[:copy_agent] = true
       end
+
+      o.on("--no-statsd") do |s|
+        opts[:skip_statsd] = true
+      end
     end
     parser.parse!(args)
 
