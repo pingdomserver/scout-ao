@@ -30,11 +30,8 @@ class Configuration
     :agent_ruby_bin, :ao_token
 
   def roles
-    if @roles
-      @roles.gsub(',', ' ')
-    else
-      @api_roles.join(' ')
-    end
+    return @roles.gsub(',', ' ') if @roles
+    @api_roles.join(' ') if @api_roles
   end
 
   def environment
