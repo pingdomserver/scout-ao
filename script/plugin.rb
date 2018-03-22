@@ -19,7 +19,8 @@ class Plugin < Struct.new(:name, :code, :config)
       response = client.make_request("/api/v2/account/clients/plugins")
 
       response.each do |p|
-        c = Configuration.new(p["meta"]["options"]) if p["meta"]
+        opts = p["meta"]["options"] if p["meta"]
+        c = Configuration.new(p["id"], p["name"], opts)
         n = "#{normalize_plugin_name(p['name'])}"
         q = Plugin.new(n, p["code"], c)
         q.save
@@ -41,14 +42,15 @@ class Plugin < Struct.new(:name, :code, :config)
     end
   end
 
-  class Configuration < Struct.new(:options)
+  class Configuration < Struct.new(:id, :name, :options)
     def to_yaml
-      return unless options.any?
-
+      options = {}
       options.inject({}) do |m, (k,v)|
         m[k] = v["value"] || v["default"]
         m
-      end.to_yaml
+      end
+      options.merge!({id: id, name: name})
+      options.to_yaml
     end
   end
 
