@@ -23,7 +23,7 @@ class Configuration
       create_statsd_config
       create_statsd_bridge_config
     end
-    update_ao_agent_configuration
+    update_ao_agent_configuration unless options[:skip_ao_config]
   end
 
   attr_reader :account_key, :hostname, :key_processes,

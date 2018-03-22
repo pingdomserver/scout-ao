@@ -28,6 +28,10 @@ class Options
       o.on("--no-statsd") do |s|
         opts[:skip_statsd] = true
       end
+
+      o.on("--no-ao-config") do |a|
+        opts[:skip_ao_config] = true
+      end
     end
     parser.parse!(args)
 
