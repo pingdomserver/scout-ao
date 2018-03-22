@@ -56,6 +56,7 @@ class Plugin < Struct.new(:name, :code, :config)
     %w(save_ruby_code save_configuraton).each do |m|
       method(m).call
     end
+    chown_plugin_path
   end
 
   private
@@ -70,5 +71,9 @@ class Plugin < Struct.new(:name, :code, :config)
 
   def save_file(name, content)
     File.write("#{PLUGIN_PATH}/#{name}", content)
+  end
+
+  def chown_plugin_path
+    %x(chown -R appoptics:appoptics #{PLUGIN_PATH})
   end
 end
