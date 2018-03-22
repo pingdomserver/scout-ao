@@ -9,7 +9,7 @@ class Runner
   class NoApiKeyException < StandardError; end;
 
   SERVER_METRICS_GEM_VERSION = %(1.2.18)
-  SCOUT_GEM_VERSION = %(6.4.5)
+  SCOUT_GEM_VERSION = %(6.4.7)
 
   class << self
     def run(api_key, options)
