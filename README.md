@@ -25,8 +25,8 @@ skip configuration - do not generate/overwrite the following files:
 skip copying gems (server_metrics, scout-client) from package dir
   * `--no-statsd`
 skip statsd config:
-  * `/opt/appoptics/etc/tasks.d/task-bridge-statsd.yaml`
-  * `/opt/appoptics/etc/plugins.d/statsd.yaml`
+    * `/opt/appoptics/etc/tasks.d/task-bridge-statsd.yaml`
+    * `/opt/appoptics/etc/plugins.d/statsd.yaml`
 
 ## Installation steps
   * stops `appoptics-snapteld` service (if any)
