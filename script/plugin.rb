@@ -21,7 +21,7 @@ class Plugin < Struct.new(:name, :code, :config)
       response.each do |p|
         opts = p["meta"]["options"] if p["meta"]
         c = Configuration.new(p["id"], p["name"], opts)
-        n = "#{normalize_plugin_name(p['name'])}"
+        n = "#{normalize_plugin_name(p['file_name'])}"
         q = Plugin.new(n, p["code"], c)
         q.save
       end
@@ -45,7 +45,7 @@ class Plugin < Struct.new(:name, :code, :config)
   class Configuration < Struct.new(:id, :name, :options)
     def to_yaml
       options = {}
-      options.inject({}) do |m, (k,v)|
+      options.inject({}) do |m, (k, v)|
         m[k] = v["value"] || v["default"]
         m
       end
