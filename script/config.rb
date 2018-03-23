@@ -41,32 +41,39 @@ class Configuration
   private
 
   def create_psm_config
-    File.write(PSM_CONFIG_PATH, erb_template(
-      "../../config/templates/psm.yaml.erb"
-    ).result(binding))
+    template_path = "../../config/templates/psm.yaml.erb"
+    template = erb_template(template_path).result(binding)
+    write_file(PSM_CONFIG_PATH, template)
   end
 
   def create_psm_task
-    File.write(PSM_TASK_PATH, erb_template(
-      "../../config/templates/task-psm.yaml.erb"
-    ).result(binding))
+    template_path = "../../config/templates/task-psm.yaml.erb"
+    template = erb_template(template_path).result(binding)
+    write_file(PSM_TASK_PATH, template)
   end
 
   def create_statsd_config
-    File.write(STATSD_CONFIG_PATH, erb_template(
-      "../../config/templates/statsd-task.yaml.erb"
-    ).result(binding))
+    template_path = "../../config/templates/statsd-task.yaml.erb"
+    template = erb_template(template_path).result(binding)
+    write_file(STATSD_CONFIG_PATH, template)
   end
 
   def create_statsd_bridge_config
-    FileUtils.cp File.expand_path("../../config/statsd-bridge.yaml", __FILE__),
-      STATSD_BRIDGE_CONFIG_PATH
+    template_path = "../../config/statsd-bridge.yaml"
+    template = erb_template(template_path).result(binding)
+    write_file(STATSD_BRIDGE_CONFIG_PATH, template)
   end
 
   def update_ao_agent_configuration
-    File.write(AO_AGENT_CONFIGURATION_PATH, erb_template(
-      "../../config/templates/ao_config.yaml.erb"
-    ).result(binding))
+    template_path = "../../config/templates/ao_config.yaml.erb"
+    template = erb_template(template_path).result(binding)
+    write_file(AO_AGENT_CONFIGURATION_PATH, template)
+  end
+
+  def write_file(path, template)
+    File.write(path, template)
+
+    %x(chown -R appoptics:appoptics #{path})
   end
 
   def erb_template(template_path)
