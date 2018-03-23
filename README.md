@@ -16,11 +16,11 @@ skip AO agent installation
 skip AO configuration generation
   * `--no-config`
 skip configuration - do not generate/overwrite the following files:
-    * `/opt/appoptics/etc/plugins.d/psm.yaml
-    * `/opt/appoptics/etc/tasks.d/task-psm.yaml
-    * `/opt/appoptics/etc/tasks.d/task-bridge-statsd.yaml
-    * `/opt/appoptics/etc/plugins.d/statsd.yaml
-    * `/opt/appoptics/etc/config.yaml
+    * `/opt/appoptics/etc/plugins.d/psm.yaml`
+    * `/opt/appoptics/etc/tasks.d/task-psm.yaml`
+    * `/opt/appoptics/etc/tasks.d/task-bridge-statsd.yaml`
+    * `/opt/appoptics/etc/plugins.d/statsd.yaml`
+    * `/opt/appoptics/etc/config.yaml`
   * `--no-gems`
 skip copying gems (server_metrics, scout-client) from package dir
   * `--no-statsd`
