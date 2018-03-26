@@ -21,7 +21,7 @@ class Options
         opts[:skip_gems] = true
       end
 
-      o.on("--copy-agent") do |a|
+      o.on("--copy-psm-plugin") do |a|
         opts[:copy_agent] = true
       end
 
