@@ -6,7 +6,7 @@ The installation needs to be run on the target server using the following comman
 ## Customization
 If needed, custom behavior can have the following options:
 
-  * `--copy-agent`
+  * `--copy-psm-plugin`
 replace the psm collector plugin binary installed with the snap plugin, with the one provided in the migration installer
   * `--no-plugin`
 skip plugins from API
@@ -27,6 +27,8 @@ skip copying gems (server_metrics, scout-client) from package dir
 skip statsd config:
     * `/opt/appoptics/etc/tasks.d/task-bridge-statsd.yaml`
     * `/opt/appoptics/etc/plugins.d/statsd.yaml`
+
+Note: `token` param is not required when both `--no-agent` and `--no-ao-config` are set.
 
 ## Installation steps
   * stops `appoptics-snapteld` service (if any)
