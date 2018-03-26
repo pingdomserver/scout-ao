@@ -13,7 +13,7 @@ class Runner
 
   class << self
     def run(api_key, options)
-      unless api_key
+      if !api_key && require_ao_key?(options)
         raise NoApiKeyException, "AppOptics Api key must be provided"
       end
 
@@ -48,5 +48,10 @@ class Runner
 
       puts "\nOk."
     end
+
+    def require_ao_key?(options)
+      !options[:skip_agent] || !options[:skip_ao_config]
+    end
   end
+  private_class_method :require_ao_key?
 end
