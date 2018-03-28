@@ -26,7 +26,7 @@ class Configuration
     update_ao_agent_configuration unless options[:skip_ao_config]
   end
 
-  attr_reader :account_key, :hostname, :key_processes,
+  attr_reader :account_key, :key_processes,
     :agent_ruby_bin, :ao_token
 
   def roles
@@ -35,7 +35,11 @@ class Configuration
   end
 
   def environment
-    @environment || 'production'
+    @environment || environment_from_api
+  end
+
+  def hostname
+    @hostname || %x(hostname).chomp
   end
 
   private
@@ -81,5 +85,12 @@ class Configuration
       File.expand_path(
         template_path, __FILE__
     )))
+  end
+
+  def environment_from_api
+    client = ::Psm::ApiClient.new(account_key, hostname)
+    response = client.make_request('/api/v2/account/clients/environment')
+
+    response["name"]
   end
 end
