@@ -35,7 +35,7 @@ class Configuration
   end
 
   def environment
-    @environment || environment_from_api
+    @environment || environment_from_api || 'production'
   end
 
   def hostname
