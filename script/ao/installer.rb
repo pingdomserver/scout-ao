@@ -7,7 +7,7 @@ module Ao
           "../../appoptics-host-agent-installer.sh", __FILE__
         )
 
-        system %(APPOPTICS_INSTALL_ONLY=1 bash #{script_path} --token #{api_key} -y)
+        system %(export APPOPTICS_INSTALL_ONLY=1; /bin/bash #{script_path} --token #{api_key} -y)
 
         copy_psm_binary if options.fetch(:copy_agent, nil)
       end
