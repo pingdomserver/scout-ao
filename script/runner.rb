@@ -19,6 +19,8 @@ class Runner
 
       # Stop scoutd (to release statsd port)
       system "scoutctl stop"
+      # Remove client hostory
+      system "rm -f /var/lib/scoutd/client_history.yaml"
       # Stop Appoptics
       system "service appoptics-snapteld stop"
 
