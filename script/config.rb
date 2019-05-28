@@ -6,7 +6,6 @@ class Configuration
   PSM_TASK_PATH = %(/opt/appoptics/etc/tasks.d/task-psm.yaml)
   STATSD_CONFIG_PATH = %(/opt/appoptics/etc/tasks.d/task-bridge-statsd.yaml)
   STATSD_BRIDGE_CONFIG_PATH = %(/opt/appoptics/etc/plugins.d/statsd.yaml)
-  AO_AGENT_CONFIGURATION_PATH = %(/opt/appoptics/etc/config.yaml)
 
   def initialize(opts = {})
     opts.each do |k,v|
@@ -19,11 +18,8 @@ class Configuration
   def call(options)
     create_psm_config
     create_psm_task
-    unless options[:skip_statsd]
-      create_statsd_config
-      create_statsd_bridge_config
-    end
-    update_ao_agent_configuration unless options[:skip_ao_config]
+    create_statsd_config
+    create_statsd_bridge_config
   end
 
   attr_reader :account_key, :key_processes,
@@ -66,12 +62,6 @@ class Configuration
     template_path = "../../config/statsd-bridge.yaml"
     template = erb_template(template_path).result(binding)
     write_file(STATSD_BRIDGE_CONFIG_PATH, template)
-  end
-
-  def update_ao_agent_configuration
-    template_path = "../../config/templates/ao_config.yaml.erb"
-    template = erb_template(template_path).result(binding)
-    write_file(AO_AGENT_CONFIGURATION_PATH, template)
   end
 
   def write_file(path, template)

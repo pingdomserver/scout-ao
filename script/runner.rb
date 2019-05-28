@@ -14,7 +14,7 @@ class Runner
   class << self
     def run(api_key, options)
       if !api_key && require_ao_key?(options)
-        raise NoApiKeyException, "AppOptics Api key must be provided"
+        raise NoApiKeyException, "Solarwinds API token must be provided"
       end
 
       # Stop scoutd (to release statsd port)
@@ -24,7 +24,7 @@ class Runner
       # Stop Appoptics
       system "service appoptics-snapteld stop"
 
-      Ao::Installer.call(api_key, options) unless options[:skip_agent]
+      Ao::Installer.call(api_key, options)
 
       # Install gems
       unless options[:skip_gems]
@@ -36,7 +36,7 @@ class Runner
 
       client_configuration = Client.gather_facts
       client_configuration.merge!({ ao_token: api_key })
-      Plugin::Downloader.new(client_configuration).call unless options[:skip_plugin]
+      Plugin::Downloader.new(client_configuration).call unless options[:skip_plugins]
       Configuration.new(client_configuration).call(options) unless options[:skip_config]
 
       # Fix scout-related permissions
@@ -52,8 +52,9 @@ class Runner
     end
 
     def require_ao_key?(options)
-      !options[:skip_agent] || !options[:skip_ao_config]
+      true
     end
   end
+
   private_class_method :require_ao_key?
 end

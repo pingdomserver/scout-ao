@@ -5,12 +5,8 @@ class Options
     opts = {}
 
     parser = OptionParser.new do |o|
-      o.on("--no-plugin") do |p|
-        opts[:skip_plugin] = true
-      end
-
-      o.on("--no-agent") do |a|
-        opts[:skip_agent] = true
+      o.on("--no-plugins") do |p|
+        opts[:skip_plugins] = true
       end
 
       o.on("--no-config") do |c|
@@ -21,17 +17,6 @@ class Options
         opts[:skip_gems] = true
       end
 
-      o.on("--copy-psm-plugin") do |a|
-        opts[:copy_agent] = true
-      end
-
-      o.on("--no-statsd") do |s|
-        opts[:skip_statsd] = true
-      end
-
-      o.on("--no-ao-config") do |a|
-        opts[:skip_ao_config] = true
-      end
     end
     parser.parse!(args)
 
