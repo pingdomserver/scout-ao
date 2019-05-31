@@ -1,8 +1,8 @@
-require_relative './psm/api_client'
+require_relative 'psm/api_client'
 
 require 'fileutils'
 
-class Plugin < Struct.new(:name, :code, :config)
+class Plugins < Struct.new(:name, :code, :config)
   PLUGIN_PATH = "/opt/appoptics/opt/psm"
 
   class Downloader

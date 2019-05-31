@@ -2,8 +2,8 @@ require 'net/http'
 require 'json'
 require 'uri'
 
-module Psm
-  class ApiClient
+module PSM
+  class APIClient
     class << self
       def development?
         ENV['RACK_ENV'] == 'development'

@@ -1,7 +1,7 @@
 require 'yaml'
-require_relative './psm/api_client'
+require_relative 'psm/api_client'
 
-class Client
+class PSMClient
   def self.gather_facts
     new.call
   end

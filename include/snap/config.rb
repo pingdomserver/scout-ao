@@ -1,11 +1,14 @@
 require 'erb'
 require 'fileutils'
 
-class Configuration
+class SnapConfig
+
   PSM_CONFIG_PATH = %(/opt/appoptics/etc/plugins.d/psm.yaml)
   PSM_TASK_PATH = %(/opt/appoptics/etc/tasks.d/task-psm.yaml)
   STATSD_CONFIG_PATH = %(/opt/appoptics/etc/tasks.d/task-bridge-statsd.yaml)
   STATSD_BRIDGE_CONFIG_PATH = %(/opt/appoptics/etc/plugins.d/statsd.yaml)
+
+  attr_reader :account_key, :key_processes, :agent_ruby_bin, :ao_token
 
   def initialize(opts = {})
     opts.each do |k,v|
@@ -15,15 +18,20 @@ class Configuration
     @agent_ruby_bin = gem_location.split('/')[0..-3].join('/') + "/bin/scout"
   end
 
-  def call(options)
+  def reconfigure(options)
     create_psm_config
     create_psm_task
     create_statsd_config
     create_statsd_bridge_config
   end
 
-  attr_reader :account_key, :key_processes,
-    :agent_ruby_bin, :ao_token
+  # Fix scout-related permissions
+  # (scout-client would be ran under appoptics user/group)
+  def fix_permissions
+    system "usermod -a -G scoutd appoptics"
+    system "chmod -v g+rw /var/log/scout/scoutd.log"
+    system "chmod -Rv g+w /var/lib/scoutd"
+  end
 
   def roles
     return @roles.gsub(',', ' ') if @roles
