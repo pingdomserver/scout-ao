@@ -1,20 +1,20 @@
 require "optparse"
 
 class Options
-	def self.parse(args)
-		opts = {}
+  def self.parse(args)
+    opts = {}
 
-		parser = OptionParser.new do |o|
-			o.on("--no-plugins") do |p|
-				opts[:skip_plugins] = true
-			end
+    parser = OptionParser.new do |o|
+      o.on("--no-plugins") do |p|
+        opts[:skip_plugins] = true
+      end
 
-			o.on("--no-config") do |c|
-				opts[:skip_config] = true
-			end
-		end
-		parser.parse!(args)
+      o.on("--no-config") do |c|
+        opts[:skip_config] = true
+      end
+    end
+    parser.parse!(args)
 
-		opts
-	end
+    opts
+  end
 end

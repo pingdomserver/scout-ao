@@ -12,7 +12,7 @@ Scout.deactivate
 Scout.download_plugins unless options[:skip_plugins]
 
 unless options[:skip_config]
-	SnapService.stop
-	SnapConfig.reconfigure
-	SnapService.start
+  SnapService.stop
+  SnapConfig.reconfigure
+  SnapService.start
 end
