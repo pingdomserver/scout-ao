@@ -13,15 +13,15 @@ workflow:
       /psm/*: {}
     tags:
       /:
-        <% if roles %>
+          <% if roles %>
         roles: <%= roles %>
-        <% end %>
-        <% if environment %>
+          <% end %>
+          <% if environment %>
         environment: <%= environment %>
-        <% end %>
-        <% if hostname %>
+          <% end %>
+          <% if hostname %>
         hostname: <%= hostname %>
-        <% end %>
+      <% end %>
     publish:
       - plugin_name: publisher-appoptics
         config:

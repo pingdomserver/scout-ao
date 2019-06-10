@@ -2,19 +2,19 @@ collector:
   psm:
     all:
       account_key: <%= account_key %>
-      <% if environment %>
+        <% if environment %>
       environment: <%= environment %>
-      <% end %>
-      <% if hostname %>
+        <% end %>
+        <% if hostname %>
       hostname: <%= hostname %>
-      <% end %>
+        <% end %>
       agent_ruby_bin: <%= agent_ruby_bin %>
-      <% if roles %>
+        <% if roles %>
       roles: <%= roles %>
-      <% end %>
-      <% if key_processes.any? %>
+        <% end %>
+        <% if key_processes.any? %>
       key_processes: <%= key_processes.join(',') %>
-      <% end %>
+        <% end %>
       plugin_directory: /opt/appoptics/opt/psm
 
 load:

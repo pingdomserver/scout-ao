@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
 
-require_relative 'include/options'
-require_relative 'include/scout/scout'
-require_relative 'include/snap/service'
-require_relative 'include/snap/config'
+require_relative "include/options"
+require_relative "include/scout/scout"
+require_relative "include/snap/service"
+require_relative "include/snap/config"
 
 options = Options.parse(ARGV)
 
@@ -16,4 +16,3 @@ unless options[:skip_config]
 	SnapConfig.reconfigure
 	SnapService.start
 end
-

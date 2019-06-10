@@ -1,5 +1,5 @@
 # TODO: Separator (.), roles, environment tags
-# tags in task config.
+    # tags in task config.
 ---
 version: 1
 schedule:
@@ -16,15 +16,15 @@ workflow:
         bridge_use_json_fields: true
     tags:
       /:
-        <% if roles %>
+          <% if roles %>
         roles: <%= roles %>
-        <% end %>
-        <% if environment %>
+          <% end %>
+          <% if environment %>
         environment: <%= environment %>
-        <% end %>
-        <% if hostname %>
+          <% end %>
+          <% if hostname %>
         hostname: <%= hostname %>
-        <% end %>
+      <% end %>
     publish:
       - plugin_name: publisher-appoptics
         config:
