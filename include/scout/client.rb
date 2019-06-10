@@ -11,11 +11,8 @@ class PSMClient
 	end
 
 	def call
-		key_processes = fetch_key_processes
 		client_roles = fetch_client_roles
-
 		scout_configuration.merge!(client_roles)
-		scout_configuration.merge!(key_processes)
 	end
 
 	private
@@ -34,11 +31,6 @@ class PSMClient
 
 		def scout_configuration
 			@scout_configuration ||= YAML.load(File.read(config_file))
-		end
-
-		def fetch_key_processes
-			response = api_client.make_request("/api/v2/account/clients/processes")
-			{key_processes: response.map {|p| p["name"]}}
 		end
 
 		def fetch_client_roles

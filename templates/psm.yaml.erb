@@ -12,10 +12,8 @@ collector:
         <% if roles %>
       roles: <%= roles %>
         <% end %>
-        <% if key_processes.any? %>
-      key_processes: <%= key_processes.join(',') %>
-        <% end %>
-      plugin_directory: /opt/appoptics/opt/psm
+
+      plugin_directory: /opt/SolarWinds/Snap/bin/psm
 
 load:
   plugin: snap-plugin-collector-psm

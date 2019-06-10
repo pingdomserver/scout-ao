@@ -11,7 +11,7 @@ class Scout
 		end
 
 		def download_plugins
-			client_configuration = Client.gather_facts
+			client_configuration = PSMClient.gather_facts
 			Plugins::Downloader.new(client_configuration).call
 		end
 	end

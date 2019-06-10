@@ -19,11 +19,11 @@ For detailed instructions please refer to: https://server-monitor.readme.io/docs
 You need to be an active SolarWinds AppOptics user with the newest SolarWinds Snap Agent installed.
 For detailed instructions please refer to: https://docs.appoptics.com/kb/host_infrastructure/host_agent_upgrade
 
-## Migration
+## Migration script
 
 ### Easy
 
-Run the following command:
+Just run the following command:
 
 	sudo ./migrate.rb
 
@@ -40,5 +40,13 @@ Note: When choosing this option, you need to manually provide them for the Snap 
 skip Snap Agent configuration 
 Note: When choosing this option, you need to manually configure the Snap PSM collector plugin. For the detailed configuration information, please refer to https://docs.appoptics.com/kb/host_infrastructure/integrations/psm/
 
-##  
+## Metrics receiving
 
+You need to enable collector(s) on AppOpctics website:
+* PSM plugins/scripts: https://my.appoptics.com/infrastructure/integrations/psm
+* StatsD: https://my.appoptics.com/infrastructure/integrations/statsd
+
+## Further reading
+
+* [PSM docs](https://docs.appoptics.com/kb/host_infrastructure/integrations/psm)
+* [StatsD docs](https://docs.appoptics.com/kb/host_infrastructure/integrations/tested/statsd)

@@ -3,7 +3,7 @@ require_relative "psm/api_client"
 require "fileutils"
 
 class Plugins < Struct.new(:name, :code, :config)
-	PLUGIN_PATH = "/opt/appoptics/opt/psm"
+	PLUGIN_PATH = "/opt/SolarWinds/Snap/bin/psm"
 
 	class Downloader
 		def initialize(client_configuration)
@@ -76,6 +76,6 @@ class Plugins < Struct.new(:name, :code, :config)
 		end
 
 		def chown_plugin_path
-			%x(chown -R appoptics:appoptics #{PLUGIN_PATH})
+			%x(chown -R solarwinds:solarwinds #{PLUGIN_PATH})
 		end
 end

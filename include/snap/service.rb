@@ -5,7 +5,7 @@ class SnapService
 		end
 
 		def start
-			system "service appoptics-snapteld restart"
+			system "service swisnapd restart"
 		end
 	end
 end
