@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
 
-require_relative "include/options"
-require_relative "include/scout/scout"
-require_relative "include/snap/service"
-require_relative "include/snap/config"
+require_relative "lib/options"
+require_relative "lib/scout/scout"
+require_relative "lib/snap/service"
+require_relative "lib/snap/config"
 
 options = Options.parse(ARGV)
 
