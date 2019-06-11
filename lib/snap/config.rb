@@ -1,5 +1,6 @@
 require "erb"
 require "fileutils"
+require_relative "../scout/client"
 
 class SnapConfig
   attr_reader :account_key, :key_processes, :agent_ruby_bin, :ao_token
@@ -8,7 +9,7 @@ class SnapConfig
     opts.each do |k, v|
       instance_variable_set :"@#{k}", v
     end
-    gem_location    = %x(gem which scout | grep #{Runner::SCOUT_GEM_VERSION}).chomp
+    gem_location = %x(gem which scout | grep #{Runner::SCOUT_GEM_VERSION}).chomp
     @agent_ruby_bin = gem_location.split("/")[0..-3].join("/") + "/bin/scout"
   end
 
@@ -33,7 +34,7 @@ class SnapConfig
   end
 
   def environment
-    @environment || environment_from_api || "production"
+    @environment || PSM || "production"
   end
 
   def hostname
@@ -44,25 +45,25 @@ class SnapConfig
 
   def create_psm_config
     template_path = "../../templates/psm.yaml.erb"
-    template      = erb_template(template_path).result(binding)
+    template = erb_template(template_path).result(binding)
     write_file(%(/opt/SolarWinds/Snap/etc/plugins.d/psm.yaml), template)
   end
 
   def create_psm_task
     template_path = "../../templates/task-psm.yaml.erb"
-    template      = erb_template(template_path).result(binding)
+    template = erb_template(template_path).result(binding)
     write_file(%(/opt/SolarWinds/Snap/etc/tasks.d/task-psm.yaml), template)
   end
 
   def create_statsd_config
     template_path = "../../templates/statsd-task.yaml.erb"
-    template      = erb_template(template_path).result(binding)
+    template = erb_template(template_path).result(binding)
     write_file(%(/opt/SolarWinds/Snap/etc/tasks.d/task-bridge-statsd.yaml), template)
   end
 
   def create_statsd_bridge_config
     template_path = "../../templates/statsd-bridge.yaml"
-    template      = erb_template(template_path).result(binding)
+    template = erb_template(template_path).result(binding)
     write_file(%(/opt/SolarWinds/Snap/etc/plugins.d/statsd.yaml), template)
   end
 
@@ -79,10 +80,4 @@ class SnapConfig
       )))
   end
 
-  def environment_from_api
-    client   = ::Psm::ApiClient.new(account_key, hostname)
-    response = client.make_request("/api/v2/account/clients/environment")
-
-    response["name"]
-  end
 end

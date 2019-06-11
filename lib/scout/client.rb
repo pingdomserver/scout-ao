@@ -1,42 +1,47 @@
 require "yaml"
-require_relative "psm/api_client"
+require "net/http"
+require "json"
+require "uri"
 
 class PSMClient
-  def self.gather_facts
-    new.call
-  end
+  CONFIG_FILE = "/etc/scout/scoutd.yml"
 
   def initialize
-    @hostname = `hostname`.chomp
+    @scout_configuration ||= YAML.load(File.read(CONFIG_FILE))
+    @hostname ||= hostname
   end
 
-  def call
-    client_roles = fetch_client_roles
-    scout_configuration.merge!(client_roles)
+  def hostname
+    @scout_configuration["hostname"] || `hostname`.chomp
+  end
+
+  def account_key
+    @scout_configuration["account_key"]
+  end
+
+  def configuration
+    @scout_configuration.merge!(roles)
+  end
+
+  def environment
+    @environment ||= fetch_environment
+  end
+
+  def roles
+    @roles ||= fetch_roles
+  end
+
+  def plugins
+    @plugins ||= fetch_plugins
   end
 
   private
 
-  def hostname
-    scout_configuration["hostname"] || @hostname
-  end
-
-  def account_key
-    scout_configuration["account_key"]
-  end
-
-  def config_file
-    %(/etc/scout/scoutd.yml)
-  end
-
-  def scout_configuration
-    @scout_configuration ||= YAML.load(File.read(config_file))
-  end
-
-  def fetch_client_roles
+  def fetch_roles
     roles = {}
 
-    response = api_client.make_request("/api/v2/account/clients/roles")
+    @client ||= APIClient.new(account_key, hostname)
+    response = client.make_request("/api/v2/account/clients/roles")
     response.reject! { |r| r["name"] == "All Servers" }
     response.map! { |r| r["name"].gsub(/(\s+|\W+)/, "_") }
 
@@ -45,7 +50,44 @@ class PSMClient
     roles
   end
 
-  def api_client
-    @client ||= Psm::ApiClient.new(account_key, hostname)
+  def fetch_environment
+    @client ||= APIClient.new(account_key, hostname)
+    response = client.make_request("/api/v2/account/clients/environment")
+
+    response["name"]
   end
+
+  def fetch_plugins
+    @client ||= APIClient.new(account_key, hostname)
+    client.make_request("/api/v2/account/clients/plugins")
+  end
+
+  class APIClient
+    API_HOST = if staging?
+                 "http://staging.server.pingdom.com"
+               else
+                 "http://server.pingdom.com"
+               end
+
+    def initialize(account_key, hostname)
+      @auth_params = { hostname: hostname, key: account_key }
+    end
+
+    def make_request(endpoint)
+      uri = URI("#{API_HOST}#{endpoint}")
+      uri.query = URI.encode_www_form(auth_params)
+      response = Net::HTTP.get_response(uri)
+      JSON.parse(response.body)
+    end
+
+    private
+
+    attr_reader :auth_params
+
+    def staging?
+      ENV["RACK_ENV"] == "staging"
+    end
+
+  end
+
 end
