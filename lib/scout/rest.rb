@@ -23,18 +23,18 @@ module PSM
                end
 
     def initialize(account_key, hostname)
-      @auth_params = {hostname: hostname, key: account_key}
+      @auth_params = { hostname: hostname, key: account_key }
     end
 
     def make_request(endpoint)
-      uri = URI("#{API_HOST}#{endpoint}")
+      uri       = URI("#{API_HOST}#{endpoint}")
       uri.query = URI.encode_www_form(auth_params)
-      response = Net::HTTP.get_response(uri)
+      response  = Net::HTTP.get_response(uri)
       JSON.parse(response.body)
     end
 
     private
 
-      attr_reader :auth_params
+    attr_reader :auth_params
   end
 end

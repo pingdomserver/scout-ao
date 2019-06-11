@@ -8,7 +8,7 @@ class SnapConfig
     opts.each do |k, v|
       instance_variable_set :"@#{k}", v
     end
-    gem_location = %x(gem which scout | grep #{Runner::SCOUT_GEM_VERSION}).chomp
+    gem_location    = %x(gem which scout | grep #{Runner::SCOUT_GEM_VERSION}).chomp
     @agent_ruby_bin = gem_location.split("/")[0..-3].join("/") + "/bin/scout"
   end
 
@@ -42,47 +42,47 @@ class SnapConfig
 
   private
 
-    def create_psm_config
-      template_path = "../../templates/psm.yaml.erb"
-      template = erb_template(template_path).result(binding)
-      write_file(%(/opt/SolarWinds/Snap/etc/plugins.d/psm.yaml), template)
-    end
+  def create_psm_config
+    template_path = "../../templates/psm.yaml.erb"
+    template      = erb_template(template_path).result(binding)
+    write_file(%(/opt/SolarWinds/Snap/etc/plugins.d/psm.yaml), template)
+  end
 
-    def create_psm_task
-      template_path = "../../templates/task-psm.yaml.erb"
-      template = erb_template(template_path).result(binding)
-      write_file(%(/opt/SolarWinds/Snap/etc/tasks.d/task-psm.yaml), template)
-    end
+  def create_psm_task
+    template_path = "../../templates/task-psm.yaml.erb"
+    template      = erb_template(template_path).result(binding)
+    write_file(%(/opt/SolarWinds/Snap/etc/tasks.d/task-psm.yaml), template)
+  end
 
-    def create_statsd_config
-      template_path = "../../templates/statsd-task.yaml.erb"
-      template = erb_template(template_path).result(binding)
-      write_file(%(/opt/SolarWinds/Snap/etc/tasks.d/task-bridge-statsd.yaml), template)
-    end
+  def create_statsd_config
+    template_path = "../../templates/statsd-task.yaml.erb"
+    template      = erb_template(template_path).result(binding)
+    write_file(%(/opt/SolarWinds/Snap/etc/tasks.d/task-bridge-statsd.yaml), template)
+  end
 
-    def create_statsd_bridge_config
-      template_path = "../../templates/statsd-bridge.yaml"
-      template = erb_template(template_path).result(binding)
-      write_file(%(/opt/SolarWinds/Snap/etc/plugins.d/statsd.yaml), template)
-    end
+  def create_statsd_bridge_config
+    template_path = "../../templates/statsd-bridge.yaml"
+    template      = erb_template(template_path).result(binding)
+    write_file(%(/opt/SolarWinds/Snap/etc/plugins.d/statsd.yaml), template)
+  end
 
-    def write_file(path, template)
-      File.write(path, template)
+  def write_file(path, template)
+    File.write(path, template)
 
-      %x(chown -R solarwinds:solarwinds #{path})
-    end
+    %x(chown -R solarwinds:solarwinds #{path})
+  end
 
-    def erb_template(template_path)
-      @erb_template = ERB.new(File.read(
-        File.expand_path(
-          template_path, __FILE__
-        )))
-    end
+  def erb_template(template_path)
+    @erb_template = ERB.new(File.read(
+      File.expand_path(
+        template_path, __FILE__
+      )))
+  end
 
-    def environment_from_api
-      client = ::Psm::ApiClient.new(account_key, hostname)
-      response = client.make_request("/api/v2/account/clients/environment")
+  def environment_from_api
+    client   = ::Psm::ApiClient.new(account_key, hostname)
+    response = client.make_request("/api/v2/account/clients/environment")
 
-      response["name"]
-    end
+    response["name"]
+  end
 end
