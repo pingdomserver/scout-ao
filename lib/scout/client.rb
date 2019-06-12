@@ -63,11 +63,7 @@ class PSMClient
   end
 
   class APIClient
-    API_HOST = if staging?
-                 "http://staging.server.pingdom.com"
-               else
-                 "http://server.pingdom.com"
-               end
+    API_HOST = ENV["SCOUT_HOST"] || "http://server.pingdom.com"
 
     def initialize(account_key, hostname)
       @auth_params = { hostname: hostname, key: account_key }
@@ -83,10 +79,6 @@ class PSMClient
     private
 
     attr_reader :auth_params
-
-    def staging?
-      ENV["RACK_ENV"] == "staging"
-    end
 
   end
 
