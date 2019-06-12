@@ -1,5 +1,6 @@
 # PSM -> AppOptics migration toolset
 
+This repository provides a helper toolset for performing migration from PSM/Scout to AppOptics/Snap monitoring system. 
 Migration needs to be performed on each monitored server.
 
 ## Prerequisities
@@ -34,7 +35,7 @@ When you're sure about this, the migration toolset comes with the following opti
 
   * `--no-plugins`
 skip downloading PSM plugins
-Note: When choosing this option, you need to manually provide them for the Snap PSM collector plugin
+Note: When choosing this option, you need to manually provide them for the Snap PSM collector plugin. The default location is `/opt/SolarWinds/Snap/bin/psm` (but can be altered in the PSM collector plugin config file).
 
   * `--no-config`
 skip Snap Agent configuration 
