@@ -1,10 +1,11 @@
+require "fileutils"
+
 require_relative "client"
 require_relative "plugins"
 
-require "fileutils"
-
 class Scout
   HISTORY_FILE = "/var/lib/scoutd/client_history.yaml"
+  CONFIG_FILE = "/etc/scout/scoutd.yml"
 
   class << self
     def deactivate
@@ -18,11 +19,32 @@ class Scout
     end
 
     # Fix scout-related permissions
-    # (scout-client would be ran under solarwinds user/group)
+    # (scout-client would be run under solarwinds user/group)
     def fix_permissions
       system "usermod -a -G scoutd solarwinds"
       system "chmod -v g+rw /var/log/scout/scoutd.log"
       system "chmod -Rv g+w /var/lib/scoutd"
     end
+  end
+
+  def initialize
+    @scout_configuration ||= YAML.load(File.read(CONFIG_FILE))
+    @hostname ||= hostname
+  end
+
+  def hostname
+    @scout_configuration["hostname"] || `hostname`.chomp
+  end
+
+  def account_key
+    @scout_configuration["account_key"]
+  end
+
+  def configuration
+    @scout_configuration.merge!(roles)
+  end
+
+  def environment
+    @environment ||= fetch_environment
   end
 end

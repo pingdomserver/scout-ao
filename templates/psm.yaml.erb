@@ -1,19 +1,14 @@
+---
+# File generated on <%= generated_time %> by https://github.com/pingdomserver/scout-ao
+
 collector:
   psm:
     all:
       account_key: <%= account_key %>
-        <% if environment %>
-      environment: <%= environment %>
-        <% end %>
-        <% if hostname %>
-      hostname: <%= hostname %>
-        <% end %>
+      ruby_path: <%= ruby_path %>
       agent_ruby_bin: <%= agent_ruby_bin %>
-        <% if roles %>
-      roles: <%= roles %>
-        <% end %>
-
-      plugin_directory: /opt/SolarWinds/Snap/bin/psm
+      plugin_directory: <%= plugin_directory %>
+      agent_data_file: <%= agent_data_file %>
 
 load:
   plugin: snap-plugin-collector-psm

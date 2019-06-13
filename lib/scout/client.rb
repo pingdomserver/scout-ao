@@ -4,27 +4,9 @@ require "json"
 require "uri"
 
 class PSMClient
-  CONFIG_FILE = "/etc/scout/scoutd.yml"
-
-  def initialize
-    @scout_configuration ||= YAML.load(File.read(CONFIG_FILE))
-    @hostname ||= hostname
-  end
-
-  def hostname
-    @scout_configuration["hostname"] || `hostname`.chomp
-  end
-
-  def account_key
-    @scout_configuration["account_key"]
-  end
-
-  def configuration
-    @scout_configuration.merge!(roles)
-  end
-
-  def environment
-    @environment ||= fetch_environment
+  def initialize(account_key, hostname)
+    @account_key = account_key
+    @hostname = hostname
   end
 
   def roles
@@ -36,6 +18,8 @@ class PSMClient
   end
 
   private
+
+  attr_reader :account_key, :hostname
 
   def fetch_roles
     roles = {}
@@ -73,10 +57,15 @@ class PSMClient
       uri = URI("#{API_HOST}#{endpoint}")
       uri.query = URI.encode_www_form(auth_params)
 
+      json = nil
       response = Net::HTTP.get_response(uri)
-      puts response.message unless response.is_a?(Net::HTTPSuccess)
+      if response.is_a?(Net::HTTPSuccess)
+        json = JSON.parse(response.body)
+      else
+        puts response.message
+      end
 
-      JSON.parse(response.body)
+      json
     end
 
     private
