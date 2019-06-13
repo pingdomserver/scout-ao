@@ -41,10 +41,10 @@ class Scout
   end
 
   def configuration
-    @scout_configuration.merge!(roles)
+    @scout_configuration.merge!(PSMClient.new(account_key, hostname).roles)
   end
 
   def environment
-    @environment ||= fetch_environment
+    @environment ||= PSMClient.new(account_key, hostname).environment
   end
 end

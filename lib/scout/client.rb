@@ -13,6 +13,10 @@ class PSMClient
     @roles ||= fetch_roles
   end
 
+  def environment
+    @environment ||= fetch_environment
+  end
+
   def plugins
     @plugins ||= fetch_plugins
   end
