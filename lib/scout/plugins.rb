@@ -15,7 +15,7 @@ class Plugins < Struct.new(:name, :code, :config)
     def call
       ensure_directory_exists
 
-      roles = PSMClient.new.roles
+      roles = PSMClient.new(account_key, hostname).roles
       roles.each do |p|
         opts = (p["meta"]["options"] if p["meta"]) || {}
         cfg = Configuration.new(p["id"], p["name"], opts)
