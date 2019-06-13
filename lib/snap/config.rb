@@ -44,25 +44,25 @@ class SnapConfig
   private
 
   def create_psm_config
-    template_path = "../../templates/psm.yaml.erb"
+    template_path = "../../../templates/psm.yaml.erb"
     template = render_template(template_path).result(binding)
     update_config_file(%(/opt/SolarWinds/Snap/etc/plugins.d/psm.yaml), template)
   end
 
   def create_psm_task
-    template_path = "../../templates/task-psm.yaml.erb"
+    template_path = "../../../templates/task-psm.yaml.erb"
     template = render_template(template_path).result(binding)
     update_config_file(%(/opt/SolarWinds/Snap/etc/tasks.d/task-psm.yaml), template)
   end
 
   def create_statsd_config
-    template_path = "../../templates/task-bridge-statsd.yaml.erb"
+    template_path = "../../../templates/task-bridge-statsd.yaml.erb"
     template = render_template(template_path).result(binding)
     update_config_file(%(/opt/SolarWinds/Snap/etc/tasks.d/task-bridge-statsd.yaml), template)
   end
 
   def create_statsd_bridge_config
-    template_path = "../../templates/statsd.yaml.erb"
+    template_path = "../../../templates/statsd.yaml.erb"
     template = render_template(template_path).result(binding)
     update_config_file(%(/opt/SolarWinds/Snap/etc/plugins.d/statsd.yaml), template)
   end
@@ -75,8 +75,7 @@ class SnapConfig
   end
 
   def render_template(template_path)
-    @erb_template = ERB.new(File.read(
-      File.expand_path(template_path, __FILE__)))
+    @erb_template = ERB.new(File.read(File.expand_path(template_path, __FILE__)))
   end
 
 end
