@@ -16,5 +16,13 @@ class Scout
       configuration = PSMClient.new.configuration
       Plugins::Downloader.new(configuration).call
     end
+
+    # Fix scout-related permissions
+    # (scout-client would be ran under solarwinds user/group)
+    def fix_permissions
+      system "usermod -a -G scoutd solarwinds"
+      system "chmod -v g+rw /var/log/scout/scoutd.log"
+      system "chmod -Rv g+w /var/lib/scoutd"
+    end
   end
 end

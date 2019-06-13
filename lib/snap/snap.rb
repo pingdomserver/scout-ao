@@ -1,7 +1,13 @@
-class SnapService
+require_relative "config"
+
+class Snap
   class << self
     def stop
       system "service swisnapd stop"
+    end
+
+    def reconfigure
+      SnapConfig.new.reconfigure
     end
 
     def start

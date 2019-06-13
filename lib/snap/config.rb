@@ -13,19 +13,11 @@ class SnapConfig
     @agent_ruby_bin = gem_location.split("/")[0..-3].join("/") + "/bin/scout"
   end
 
-  def reconfigure(options)
+  def reconfigure
     create_psm_config
     create_psm_task
     create_statsd_config
     create_statsd_bridge_config
-  end
-
-  # Fix scout-related permissions
-  # (scout-client would be ran under solarwinds user/group)
-  def fix_permissions
-    system "usermod -a -G scoutd solarwinds"
-    system "chmod -v g+rw /var/log/scout/scoutd.log"
-    system "chmod -Rv g+w /var/lib/scoutd"
   end
 
   def roles
@@ -68,16 +60,15 @@ class SnapConfig
   end
 
   def write_file(path, template)
-    File.write(path, template)
-
-    %x(chown -R solarwinds:solarwinds #{path})
+    unless File.exists?(path)
+      File.write(path, template)
+      system "chown -R solarwinds:solarwinds #{path}"
+    end
   end
 
   def erb_template(template_path)
     @erb_template = ERB.new(File.read(
-      File.expand_path(
-        template_path, __FILE__
-      )))
+      File.expand_path(template_path, __FILE__)))
   end
 
 end
