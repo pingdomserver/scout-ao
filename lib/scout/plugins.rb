@@ -6,21 +6,22 @@ class Plugins < Struct.new(:name, :code, :config)
   PLUGIN_PATH = "/opt/SolarWinds/Snap/bin/psm"
 
   class Downloader
-    def initialize(client_configuration)
-      @account_key = client_configuration.fetch("account_key")
-      hostname = %x(hostname).chomp
-      @hostname = client_configuration.fetch("hostname", hostname)
+    def initialize(account_key, hostname)
+      @account_key = account_key
+      @hostname = hostname
     end
 
     def call
       ensure_directory_exists
 
-      roles = PSMClient.new(account_key, hostname).roles
-      roles.each do |p|
+      plugins = PSMClient.new(account_key, hostname).plugins
+      plugins.each do |p|
         opts = (p["meta"]["options"] if p["meta"]) || {}
         cfg = Configuration.new(p["id"], p["name"], opts)
         name = "#{normalize_plugin_name(p['file_name'])}"
+        puts name
         plugin = Plugins.new(name, p["code"], cfg)
+        puts plugin
         plugin.save
       end
     end

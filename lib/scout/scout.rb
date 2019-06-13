@@ -14,8 +14,8 @@ class Scout
     end
 
     def download_plugins
-      configuration = Scout.new.configuration
-      Plugins::Downloader.new(configuration).call
+      s = Scout.new
+      Plugins::Downloader.new(s.account_key, s.hostname).call
     end
 
     # Fix scout-related permissions
