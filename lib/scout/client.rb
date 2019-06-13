@@ -41,7 +41,7 @@ class PSMClient
     roles = {}
 
     @client ||= APIClient.new(account_key, hostname)
-    response = client.make_request("/api/v2/account/clients/roles")
+    response = @client.make_request("/api/v2/account/clients/roles")
     response.reject! { |r| r["name"] == "All Servers" }
     response.map! { |r| r["name"].gsub(/(\s+|\W+)/, "_") }
 
@@ -52,14 +52,14 @@ class PSMClient
 
   def fetch_environment
     @client ||= APIClient.new(account_key, hostname)
-    response = client.make_request("/api/v2/account/clients/environment")
+    response = @client.make_request("/api/v2/account/clients/environment")
 
     response["name"]
   end
 
   def fetch_plugins
     @client ||= APIClient.new(account_key, hostname)
-    client.make_request("/api/v2/account/clients/plugins")
+    @client.make_request("/api/v2/account/clients/plugins")
   end
 
   class APIClient
