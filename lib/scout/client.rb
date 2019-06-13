@@ -71,10 +71,10 @@ class PSMClient
 
     def make_request(endpoint)
       uri = URI("#{API_HOST}#{endpoint}")
-      uri.query = URI.encode_www_form(@auth_params)
-      response = Net::HTTP.get_response(uri)
+      uri.query = URI.encode_www_form(auth_params)
 
-      puts response
+      response = Net::HTTP.get_response(uri)
+      puts res.message unless res.is_a?(Net::HTTPSuccess)
 
       JSON.parse(response.body)
     end
