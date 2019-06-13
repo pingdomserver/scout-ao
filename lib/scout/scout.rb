@@ -9,7 +9,7 @@ class Scout
   class << self
     def deactivate
       system "scoutctl stop"
-      system "mv -f #{HISTORY_FILE} #{HISTORY_FILE}.bak"
+      system "[ -f #{HISTORY_FILE} ] && mv -f #{HISTORY_FILE} #{HISTORY_FILE}.bak.$(date)"
     end
 
     def download_plugins
