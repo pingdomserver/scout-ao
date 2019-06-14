@@ -19,9 +19,7 @@ class Plugins < Struct.new(:name, :code, :config)
         opts = (p["meta"]["options"] if p["meta"]) || {}
         cfg = Configuration.new(p["id"], p["name"], opts)
         name = "#{normalize_plugin_name(p['file_name'])}"
-        puts name
         plugin = Plugins.new(name, p["code"], cfg)
-        puts plugin
         plugin.save
       end
     end
