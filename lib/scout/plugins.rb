@@ -1,10 +1,9 @@
 require_relative "client"
+require_relative "../snap/config"
 
 require "fileutils"
 
 class Plugins < Struct.new(:name, :code, :config)
-  PLUGIN_PATH = "/opt/SolarWinds/Snap/bin/psm"
-
   class Downloader
     def initialize(account_key, hostname)
       @account_key = account_key
@@ -29,8 +28,8 @@ class Plugins < Struct.new(:name, :code, :config)
     attr_reader :account_key, :hostname
 
     def ensure_directory_exists
-      unless File.exists?(PLUGIN_PATH)
-        FileUtils.mkdir_p(PLUGIN_PATH)
+      unless File.exists?(SnapConfig::PLUGIN_PATH)
+        FileUtils.mkdir_p(SnapConfig::PLUGIN_PATH)
       end
     end
 
@@ -70,10 +69,10 @@ class Plugins < Struct.new(:name, :code, :config)
   end
 
   def save_file(name, content)
-    File.write("#{PLUGIN_PATH}/#{name}", content)
+    File.write("#{SnapConfig::PLUGIN_PATH}/#{name}", content)
   end
 
   def chown_plugin_path
-    %x(chown -R solarwinds:solarwinds #{PLUGIN_PATH})
+    %x(chown -R solarwinds:solarwinds #{SnapConfig::PLUGIN_PATH})
   end
 end
