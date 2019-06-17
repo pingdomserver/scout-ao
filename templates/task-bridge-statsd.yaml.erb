@@ -1,6 +1,6 @@
-# TODO: Separator (.), roles, environment tags
-    # tags in task config.
 ---
+# File generated on <%= generated_time %> by https://github.com/pingdomserver/scout-ao
+
 version: 1
 schedule:
   # Run every minute
@@ -16,15 +16,9 @@ workflow:
         bridge_use_json_fields: true
     tags:
       /:
-          <% if roles %>
-        roles: <%= roles %>
-          <% end %>
-          <% if environment %>
-        environment: <%= environment %>
-          <% end %>
-          <% if hostname %>
-        hostname: <%= hostname %>
-      <% end %>
+        <% if roles %>roles: <%= roles %><% end %>
+        <% if environment %>environment: <%= environment %><% end %>
+        <% if hostname %>hostname: <%= hostname %><% end %>
     publish:
       - plugin_name: publisher-appoptics
         config:

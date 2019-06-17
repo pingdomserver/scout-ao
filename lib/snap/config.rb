@@ -1,31 +1,34 @@
+require "date"
 require "erb"
 require "fileutils"
 require_relative "../scout/client"
 
 class SnapConfig
-  attr_reader :account_key, :key_processes, :agent_ruby_bin, :ao_token
+  INSTALL_PATH = "/opt/SolarWinds/Snap"
+  PLUGIN_PATH = "#{INSTALL_PATH}/bin/psm"
 
-  def initialize(opts = {})
-    opts.each do |k, v|
-      instance_variable_set :"@#{k}", v
+  attr_reader :account_key, :agent_ruby_bin, :ruby_path, :plugin_directory, :agent_data_file
+
+  def initialize
+    @account_key = Scout.new.account_key
+
+    scout_location = %x(find / -iname scout-client 2>/dev/null | head -1).chomp
+    @agent_ruby_bin = scout_location + "/bin/scout"
+
+    @ruby_path = %x(which ruby)
+    @plugin_directory = PLUGIN_PATH
+    @agent_data_file = Scout::HISTORY_FILE
+  end
+
+  def reconfigure
+    [
+      { name: "psm", location: "plugins.d" },
+      { name: "task-psm", location: "tasks.d" },
+      { name: "statsd", location: "plugins.d" },
+      { name: "task-bridge-statsd", location: "tasks.d" },
+    ].each do |t|
+      render_config(t[:name], t[:location])
     end
-    gem_location = %x(gem which scout | grep #{Runner::SCOUT_GEM_VERSION}).chomp
-    @agent_ruby_bin = gem_location.split("/")[0..-3].join("/") + "/bin/scout"
-  end
-
-  def reconfigure(options)
-    create_psm_config
-    create_psm_task
-    create_statsd_config
-    create_statsd_bridge_config
-  end
-
-  # Fix scout-related permissions
-  # (scout-client would be ran under solarwinds user/group)
-  def fix_permissions
-    system "usermod -a -G scoutd solarwinds"
-    system "chmod -v g+rw /var/log/scout/scoutd.log"
-    system "chmod -Rv g+w /var/lib/scoutd"
   end
 
   def roles
@@ -34,50 +37,34 @@ class SnapConfig
   end
 
   def environment
-    @environment || PSM || "production"
+    @environment ||= ENV["RACK_ENV"] || "production"
   end
 
   def hostname
-    @hostname || %x(hostname).chomp
+    @hostname ||= %x(hostname).chomp
+  end
+
+  def generated_time
+    Time.now.to_s
   end
 
   private
 
-  def create_psm_config
-    template_path = "../../templates/psm.yaml.erb"
-    template = erb_template(template_path).result(binding)
-    write_file(%(/opt/SolarWinds/Snap/etc/plugins.d/psm.yaml), template)
+  def render_config(name, location)
+    template_path = "../../../templates/#{name}.yaml.erb"
+    template = render_template(template_path).result(binding)
+    update_config_file("#{INSTALL_PATH}/etc/#{location}/#{name}.yaml", template)
   end
 
-  def create_psm_task
-    template_path = "../../templates/task-psm.yaml.erb"
-    template = erb_template(template_path).result(binding)
-    write_file(%(/opt/SolarWinds/Snap/etc/tasks.d/task-psm.yaml), template)
-  end
+  def update_config_file(path, template)
+    system "[ -f #{path} ] && mv -f #{path} #{path}.bak"
 
-  def create_statsd_config
-    template_path = "../../templates/statsd-task.yaml.erb"
-    template = erb_template(template_path).result(binding)
-    write_file(%(/opt/SolarWinds/Snap/etc/tasks.d/task-bridge-statsd.yaml), template)
-  end
-
-  def create_statsd_bridge_config
-    template_path = "../../templates/statsd-bridge.yaml"
-    template = erb_template(template_path).result(binding)
-    write_file(%(/opt/SolarWinds/Snap/etc/plugins.d/statsd.yaml), template)
-  end
-
-  def write_file(path, template)
     File.write(path, template)
-
-    %x(chown -R solarwinds:solarwinds #{path})
+    system "chown -R solarwinds:solarwinds #{path}"
   end
 
-  def erb_template(template_path)
-    @erb_template = ERB.new(File.read(
-      File.expand_path(
-        template_path, __FILE__
-      )))
+  def render_template(template_path)
+    @erb_template = ERB.new(File.read(File.expand_path(template_path, __FILE__)))
   end
 
 end

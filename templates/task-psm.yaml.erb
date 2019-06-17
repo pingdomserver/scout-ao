@@ -1,27 +1,25 @@
 ---
+# File generated on <%= generated_time %> by https://github.com/pingdomserver/scout-ao
+
 version: 1
 
 schedule:
   type: cron
   interval: "0 * * * * *"
 
-deadline: "55s"
-
 workflow:
   collect:
     metrics:
+
+      # Don't change
+      # Currently filtering is not supported for psm collector
       /psm/*: {}
+
     tags:
       /:
-          <% if roles %>
-        roles: <%= roles %>
-          <% end %>
-          <% if environment %>
-        environment: <%= environment %>
-          <% end %>
-          <% if hostname %>
-        hostname: <%= hostname %>
-      <% end %>
+        <% if roles %>roles: <%= roles %><% end %>
+        <% if environment %>environment: <%= environment %><% end %>
+        <% if hostname %>hostname: <%= hostname %><% end %>
     publish:
       - plugin_name: publisher-appoptics
         config:
