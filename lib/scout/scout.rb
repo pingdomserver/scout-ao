@@ -56,7 +56,7 @@ class Scout
   end
 
   def hostname
-    @scout_configuration["hostname"] || `hostname`.chomp
+    @scout_configuration["hostname"] || %x(hostname).chomp
   end
 
   def account_key
@@ -68,6 +68,10 @@ class Scout
   end
 
   def environment
-    @environment ||= PSMClient.new(account_key, hostname).environment
+    @environment ||= PSMClient.new(account_key, hostname).environment || ENV["RACK_ENV"] || "production"
+  end
+
+  def roles
+    @roles ||= PSMClient.new(account_key, hostname).roles
   end
 end

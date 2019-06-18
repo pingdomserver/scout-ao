@@ -28,6 +28,8 @@ Just run the following command:
 
 	sudo ./migrate.rb
 
+And then enable the PSM integration in the AppOptics UI - on the [Integrations Page](https://my.appoptics.com/infrastructure/integrations) you should see the PSM plugin available in a few minutes.
+
 ### Advanced
 
 Normally you won't need to change those options. 
