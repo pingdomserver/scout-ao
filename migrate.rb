@@ -6,6 +6,11 @@ require_relative "lib/snap/snap"
 
 options = Options.parse(ARGV)
 
+unless Scout.running?
+  puts "Migration preconditions failed: Scout service not running"
+  exit(1)
+end
+
 puts "* Deactivate Scout"
 Scout.deactivate
 

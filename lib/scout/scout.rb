@@ -6,11 +6,33 @@ require_relative "plugins"
 class Scout
   HISTORY_FILE = "/var/lib/scoutd/client_history.yaml"
   CONFIG_FILE = "/etc/scout/scoutd.yml"
+  SCOUTD = "scoutd"
 
   class << self
+    def running?
+      system "pgrep #{SCOUTD}"
+    end
+
     def deactivate
+      scoutd_pid = %x(pgrep #{SCOUTD}).chomp
       system "scoutctl stop"
       system "[ -f #{HISTORY_FILE} ] && mv -f #{HISTORY_FILE} #{HISTORY_FILE}.bak"
+
+
+      # Wait for scoutd children
+      timeout = 15
+      i = 0
+      loop do
+        break if system "pgrep -P #{scoutd_pid} >/dev/null"
+
+        # Kill eventually
+        if i >= timeout
+          system "kill -9 $(pgrep -P #{scoutd_pid})"
+        end
+
+        i += 1
+        sleep 1
+      end
     end
 
     def download_plugins
