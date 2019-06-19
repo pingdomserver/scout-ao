@@ -18,7 +18,7 @@ class SnapConfig
     scout_location = %x(find / -iname scout-client 2>/dev/null | head -1).chomp
     @agent_ruby_bin = scout_location + "/bin/scout"
 
-    @ruby_path = %x(which ruby)
+    @ruby_path = %x(which ruby).chomp
     @plugin_directory = PLUGIN_PATH
     @agent_data_file = Scout::HISTORY_FILE
   end

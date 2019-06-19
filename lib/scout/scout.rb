@@ -17,26 +17,13 @@ class Scout
       scoutd_pid = %x(pgrep #{SCOUTD}).chomp
       system "scoutctl stop"
 
-      # Wait for scoutd children
-      timeout = 15
-      i = 0
-      while system "pgrep -P #{scoutd_pid} >/dev/null" do
+      # term
+      wait_for_scoutd_and_children(scoutd_pid, 15)
 
-        # Eventually kill
-        if i >= timeout
-          # children
-          %x(pgrep -P #{scoutd_pid}).lines.each do |pid|
-            system "kill -9 #{pid}"
-          end
+      # kill
+      wait_for_scoutd_and_children(scoutd_pid, 9)
 
-          # assure scoutd is also gone
-          system "kill -9 $(pgrep #{SCOUTD}) 2>/dev/null" if system "pgrep #{SCOUTD}"
-        end
-
-        i += 1
-        sleep 1
-      end
-
+      sleep 1
       system "[ -f #{HISTORY_FILE} ] && mv -f #{HISTORY_FILE} #{HISTORY_FILE}.bak"
     end
 
@@ -51,6 +38,25 @@ class Scout
       system "usermod -a -G scoutd solarwinds"
       system "chmod -v g+rw /var/log/scout/scoutd.log"
       system "chmod -Rv g+w /var/lib/scoutd"
+    end
+
+    private
+
+    def wait_for_scoutd_and_children(scoutd_pid, signal = 15)
+      timeout = 15
+      i = 0
+      while system "pgrep -g #{scoutd_pid} >/dev/null" do
+        if i >= timeout
+          %x(pgrep -g #{scoutd_pid}).lines.each do |pid|
+            system "kill -#{signal} #{pid} 2>/dev/null"
+          end
+
+          break
+        end
+
+        i += 1
+        sleep 1
+      end
     end
   end
 
