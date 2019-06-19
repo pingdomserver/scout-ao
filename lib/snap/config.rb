@@ -7,11 +7,10 @@ class SnapConfig
   INSTALL_PATH = "/opt/SolarWinds/Snap"
   PLUGIN_PATH = "#{INSTALL_PATH}/bin/psm"
 
-  attr_reader :account_key, :agent_ruby_bin, :ruby_path, :plugin_directory, :agent_data_file, :environment, :hostname, :roles
+  attr_reader :agent_ruby_bin, :ruby_path, :plugin_directory, :agent_data_file, :environment, :hostname, :roles
 
   def initialize
     scout = Scout.new
-    @account_key = scout.account_key
     @environment = scout.environment
     @hostname = scout.hostname
     @roles = scout.roles.join(" ")
