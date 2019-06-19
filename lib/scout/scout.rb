@@ -16,8 +16,6 @@ class Scout
     def deactivate
       scoutd_pid = %x(pgrep #{SCOUTD}).chomp
       system "scoutctl stop"
-      system "[ -f #{HISTORY_FILE} ] && mv -f #{HISTORY_FILE} #{HISTORY_FILE}.bak"
-
 
       # Wait for scoutd children
       timeout = 15
@@ -38,6 +36,8 @@ class Scout
         i += 1
         sleep 1
       end
+
+      system "[ -f #{HISTORY_FILE} ] && mv -f #{HISTORY_FILE} #{HISTORY_FILE}.bak"
     end
 
     def download_plugins
