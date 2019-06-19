@@ -18,10 +18,10 @@ class Scout
       system "scoutctl stop"
 
       # term
-      wait_for_scoutd_and_children(scoutd_pid, 15)
+      wait_for_scoutd_and_children(scoutd_pid, "TERM")
 
       # kill
-      wait_for_scoutd_and_children(scoutd_pid, 9)
+      wait_for_scoutd_and_children(scoutd_pid, "KILL")
 
       sleep 1
       system "[ -f #{HISTORY_FILE} ] && mv -f #{HISTORY_FILE} #{HISTORY_FILE}.bak"
@@ -42,7 +42,7 @@ class Scout
 
     private
 
-    def wait_for_scoutd_and_children(scoutd_pid, signal = 15)
+    def wait_for_scoutd_and_children(scoutd_pid, signal)
       timeout = 15
       i = 0
       while system "pgrep -g #{scoutd_pid} >/dev/null" do
