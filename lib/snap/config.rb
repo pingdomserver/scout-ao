@@ -15,10 +15,10 @@ class SnapConfig
     @hostname = scout.hostname
     @roles = scout.roles.join(" ")
 
-    scout_location = %x(find / -iname scout-client 2>/dev/null | head -1).chomp
+    scout_location = %x(find / -iname scout-client -print -quit 2>/dev/null).chomp
     @agent_ruby_bin = scout_location + "/bin/scout"
 
-    @ruby_path = %x(which ruby)
+    @ruby_path = %x(which ruby).chomp
     @plugin_directory = PLUGIN_PATH
     @agent_data_file = Scout::HISTORY_FILE
   end
