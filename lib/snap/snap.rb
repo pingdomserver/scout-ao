@@ -1,9 +1,11 @@
 require_relative "config"
 
 class Snap
+  SWISNAPD = "swisnapd"
+  
   class << self
     def stop
-      system "service swisnapd stop"
+      system "service #{SWISNAPD} stop"
     end
 
     def reconfigure
@@ -11,7 +13,7 @@ class Snap
     end
 
     def start
-      system "service swisnapd restart"
+      system "service #{SWISNAPD} restart"
     end
   end
 end
