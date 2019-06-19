@@ -22,12 +22,17 @@ class Scout
       # Wait for scoutd children
       timeout = 15
       i = 0
-      loop do
-        break if system "pgrep -P #{scoutd_pid} >/dev/null"
+      while system "pgrep -P #{scoutd_pid} >/dev/null" do
 
-        # Kill eventually
+        # Eventually kill
         if i >= timeout
-          system "kill -9 $(pgrep -P #{scoutd_pid})"
+          # children
+          %x(pgrep -P #{scoutd_pid}).lines.each do |pid|
+            system "kill -9 #{pid}"
+          end
+
+          # assure scoutd is also gone
+          system "kill -9 $(pgrep #{SCOUTD}) 2>/dev/null" if system "pgrep #{SCOUTD}"
         end
 
         i += 1
