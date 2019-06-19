@@ -26,16 +26,12 @@ class PSMClient
   attr_reader :account_key, :hostname
 
   def fetch_roles
-    roles = {}
-
     @client ||= APIClient.new(account_key, hostname)
     response = @client.make_request("#{APIClient::API_PATH}/roles")
     response.reject! { |r| r["name"] == "All Servers" }
     response.map! { |r| r["name"].gsub(/(\s+|\W+)/, "_") }
 
-    roles.merge!({ api_roles: response }) if response.any?
-
-    roles
+    response
   end
 
   def fetch_environment

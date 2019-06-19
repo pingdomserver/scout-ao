@@ -7,10 +7,14 @@ class SnapConfig
   INSTALL_PATH = "/opt/SolarWinds/Snap"
   PLUGIN_PATH = "#{INSTALL_PATH}/bin/psm"
 
-  attr_reader :account_key, :agent_ruby_bin, :ruby_path, :plugin_directory, :agent_data_file
+  attr_reader :account_key, :agent_ruby_bin, :ruby_path, :plugin_directory, :agent_data_file, :environment, :hostname, :roles
 
   def initialize
-    @account_key = Scout.new.account_key
+    scout = Scout.new
+    @account_key = scout.account_key
+    @environment = scout.environment
+    @hostname = scout.hostname
+    @roles = scout.roles.join(" ")
 
     scout_location = %x(find / -iname scout-client 2>/dev/null | head -1).chomp
     @agent_ruby_bin = scout_location + "/bin/scout"
@@ -29,19 +33,6 @@ class SnapConfig
     ].each do |t|
       render_config(t[:name], t[:location])
     end
-  end
-
-  def roles
-    return @roles.gsub(",", " ") if @roles
-    @api_roles.join(" ") if @api_roles
-  end
-
-  def environment
-    @environment ||= ENV["RACK_ENV"] || "production"
-  end
-
-  def hostname
-    @hostname ||= %x(hostname).chomp
   end
 
   def generated_time
