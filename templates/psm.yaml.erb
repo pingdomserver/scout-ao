@@ -1,0 +1,14 @@
+---
+# File generated on <%= generated_time %> by https://github.com/pingdomserver/scout-ao
+
+collector:
+  psm:
+    all:
+      ruby_path: <%= ruby_path %>
+      agent_ruby_bin: <%= agent_ruby_bin %>
+      plugin_directory: <%= plugin_directory %>
+      agent_data_file: <%= agent_data_file %>
+
+load:
+  plugin: snap-plugin-collector-psm
+  task: task-psm.yaml

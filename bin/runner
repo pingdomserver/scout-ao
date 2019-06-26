@@ -1,9 +1,0 @@
-#!/usr/bin/env ruby
-
-require_relative '../script/runner'
-require_relative '../script/options'
-
-opts = Options.parse(ARGV)
-ao_account_key = ARGV.shift if ARGV.any?
-
-Runner.run ao_account_key, opts
