@@ -1,6 +1,6 @@
 # PSM -> AppOptics migration toolset
 
-This repository provides a toolset for migrating from PSM/Scout to AppOptics/Snap infrastructure monitoring.
+This repository provides a toolset for migrating from PSM/Scout to AppOptics/SolarWinds Snap Agent infrastructure monitoring.
 Migration needs to be performed on each monitored server.
 
 ## Table of contents
@@ -16,7 +16,7 @@ Migration needs to be performed on each monitored server.
 		- [Ansible](#ansible)
 		- [Chef](#chef)
 		- [Puppet](#puppet)
-3. [AppOptics agent configuration](#appoptics-agent-configuration)
+3. [SolarWinds Snap Agent configuration](#solarwinds-snap-agent-configuration)
 4. [Further reading](#further-reading)
 
 
@@ -57,7 +57,7 @@ skip downloading PSM plugins
 Note: When choosing this option, you need to manually provide them for the Snap PSM collector plugin. The default location is `/opt/SolarWinds/Snap/bin/psm` (but can be altered in the PSM collector plugin config file).
 
   * `--no-config`
-skip Snap Agent configuration
+skip SolarWinds Snap Agent configuration
 Note: When choosing this option, you need to manually configure the Snap PSM collector plugin. For the detailed configuration information, please refer to https://docs.appoptics.com/kb/host_infrastructure/integrations/psm/
 
 ### Using configuration management
@@ -103,7 +103,7 @@ exec { 'run AO migration script':
 }
 ```
 
-## AppOptics agent configuration
+## SolarWinds Snap Agent agent configuration
 
 You need to enable collector(s) on AppOpctics website:
 * PSM plugins/scripts: https://my.appoptics.com/infrastructure/integrations/psm
