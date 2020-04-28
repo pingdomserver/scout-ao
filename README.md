@@ -119,13 +119,14 @@ Note: When choosing this option, you need to manually configure the Snap PSM col
     # Stop the service
     scoutctl stop
     
-    # Make sure the process have exited
+    # Give it a while and make sure the process has exited
+    sleep 5
     pgrep -g ${SCOUTD_PID} | xargs kill
     ```
 
 #### Backup
 
-1. Backup Scout "history file" - ie. a config/data file that contains your PSM token:
+1. Backup the "history file" of Scout - ie. a config/data file that contains your PSM token along with some other data:
 
     ```shell script
     HISTORY_FILE="/var/lib/scoutd/client_history.yaml"
@@ -138,7 +139,7 @@ Note: When choosing this option, you need to manually configure the Snap PSM col
 
     TODO: Document PSM plugins downloading
 
-0. Set permissions
+0. Update permissions for running scout stuff from a snap plugin
 
     ```shell script
     # swisnap is run as solarwinds user which now needs to be in scoutd group
@@ -152,9 +153,9 @@ Note: When choosing this option, you need to manually configure the Snap PSM col
 
 #### Setup SolarWinds Snap Agent
 
-1. Configure SWISnap PSM plugin
+1. Configure PSM plugin
 
-    Edit the following plugin config template and save as /opt/SolarWinds/Snap/etc/plugins.d/psm.yaml
+    Adjust the following plugin configuration template and save it as `/opt/SolarWinds/Snap/etc/plugins.d/psm.yaml`
     ```yaml
     ---
     collector:
@@ -180,7 +181,7 @@ Note: When choosing this option, you need to manually configure the Snap PSM col
     
     ```
 
-    Edit the following task template and save as /opt/SolarWinds/Snap/etc/tasks.d/task-psm.yaml
+    Adjust the following task configuration and save it as `/opt/SolarWinds/Snap/etc/tasks.d/task-psm.yaml`
     ```yaml
     ---
     version: 1
@@ -207,7 +208,7 @@ Note: When choosing this option, you need to manually configure the Snap PSM col
 
 0. If you were using StatsD feature in PSM, you also need to enable StatsD collector for SWISnap
    
-   Edit the following plugin config template and save as /opt/SolarWinds/Snap/etc/plugins.d/psm-statsd.yaml
+   Adjust the following plugin configuration template and save it as `/opt/SolarWinds/Snap/etc/plugins.d/psm-statsd.yaml`
    ```yaml
     ---    
     collector:
@@ -271,7 +272,7 @@ Note: When choosing this option, you need to manually configure the Snap PSM col
       task: task-bridge-statsd.yaml
     ```
 
-    Edit the following task template and save as /opt/SolarWinds/Snap/etc/tasks.d/task-psm-statsd.yaml
+    Adjust the following task configuration and save it as `/opt/SolarWinds/Snap/etc/tasks.d/task-psm-statsd.yaml`
     ```yaml
     ---
     version: 1
