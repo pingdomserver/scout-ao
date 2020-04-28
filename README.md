@@ -137,7 +137,84 @@ Note: When choosing this option, you need to manually configure the Snap PSM col
 
 1. Download PSM plugins
 
-    TODO: Document PSM plugins downloading
+    Make the directory first (can be any location, however if you change that, make sure to update all the other relevant places)
+    ```shell script
+    sudo mkdir -p /opt/SolarWinds/Snap/psm
+    sudo chown -R solarwinds:solarwinds /opt/SolarWinds/Snap/psm
+    ```
+
+    Unless you want to use the PSM API client and downloader parts of the migration script (see https://github.com/pingdomserver/scout-ao/tree/master/lib/scout), you have to do the API requests and parsing manually for each server (host):
+
+    NOTE: You can easily obtain `hostname` and `key` from the ${HISTORY_FILE} you have backed up earlier.
+
+    1. Fetch roles
+    
+        ```shell script
+        curl "http://server.pingdom.com/api/v2/account/clients/roles?hostname=${HOSTNAME}&key=${ACCOUNT_KEY}"
+        ```
+    
+        Sample response:
+        
+        ```json
+        [
+            {
+                "id": 123456,
+                "name": "All Servers"
+            },
+            {
+                "id": 234567,
+                "name": "database"
+            }
+        ]
+        ```
+    
+        NOTE: Every host would have "All Servers" entry, some of them may have additional one(s).
+    
+    0. Fetch environments
+    
+        ```shell script
+        curl "http://server.pingdom.com/api/v2/account/clients/environment?hostname=${HOSTNAME}&key=${ACCOUNT_KEY}"
+        ```
+
+        Sample response:
+        
+        ```json
+        {
+            "id": 12345,
+            "name": "staging"
+        }
+        ```
+
+    0. Fetch plugins code (and configuration if applicable)
+
+        ```shell script 
+        curl "http://server.pingdom.com/api/v2/account/clients/plugins?hostname=${HOSTNAME}&key=${ACCOUNT_KEY}"
+        ```
+
+        Sample response:
+        
+        ```json
+        [
+            {
+                "code": "class NetworkConnections < Scout::Plugin\n\n  OPTIONS=<<-EOS\n    port:\n      label: Ports\n      notes: comma-delimited list of ports to monitor. Or specify all for summary info across all ports.\n      default: \"80,443,25\"\n  EOS\n\n  def build_report\n    report_hash={}\n    port_hash = {}\n    if option(:port).strip != \"all\"\n      option(:port).split(/[, ]+/).each { |port| port_hash[port.to_i] = 0 }\n    end\n\n    lines = shell(\"netstat -n\").split(\"\\n\")\n    connections_hash = {:tcp => 0,\n                        :udp => 0,\n                        :unix => 0,\n                        :total => 0}\n\n    lines.each { |line|\n      line = line.squeeze(\" \").split(\" \")\n      next unless line[0] =~ /tcp|udp|unix/\n      connections_hash[:total] += 1\n      protocol = line[0].sub(/\\d+/,'').to_sym\n      connections_hash[protocol] += 1 if connections_hash[protocol]\n\n      local_address = line[3].sub(\"::ffff:\",\"\") # indicates ip6 - remove so regex works\n      port = local_address.split(\":\")[1].to_i\n      port_hash[port] += 1 if port_hash.has_key?(port)\n    }\n\n    connections_hash.each_pair { |conn_type, counter|\n      report_hash[conn_type]=counter\n    }\n\n    port_hash.each_pair { |port, counter|\n      report_hash[\"Port #{port}\"] = counter\n    }\n\n    report(report_hash)\n  end\n\n  # Use this instead of backticks. It's a separate method so it can be stubbed for tests\n  def shell(cmd)\n    `#{cmd}`\n  end\nend",
+                "file_name": "Network connections",
+                "id": 123456789,
+                "meta": {
+                    "options": {
+                        "port": {
+                            "default": "80,443,25",
+                            "label": "Ports",
+                            "notes": "comma-delimited list of ports to monitor. Or specify all for summary info across all ports.",
+                            "value": "80,443,25,22,53"
+                        }
+                    }
+                },
+                "name": "Network connections"
+            }
+        ]
+        ```
+       
+        Contents of `.code` should be saved as a `.rb` file, contents of `.meta.options` as `.yaml`. Both files should have the same name (no special naming rules here).
 
 0. Update permissions for running scout stuff from a snap plugin
 
@@ -197,7 +274,7 @@ Note: When choosing this option, you need to manually configure the Snap PSM col
           /psm/*: {}
         ## Set if needed - those tags will be applied to *every* metric matching /psm/*
         tags:
-          /:
+          #/:
             #roles: 
             #environment:
             #hostname:
@@ -291,7 +368,7 @@ Note: When choosing this option, you need to manually configure the Snap PSM col
             # Report min, max, sum, count, stddev as a single measurement to the publisher
             bridge_use_json_fields: true
         tags:
-          /:
+          #/:
             #roles: 
             #environment:
             #hostname:
