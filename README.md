@@ -20,6 +20,9 @@ Migration needs to be performed on each monitored server.
 
 ## Prerequisites
 
+The latest Scout agent and SolarWinds Snap Agent need to be installed.
+Once the migration is complete, the ScoutD daemon can be disabled, but the dependencies of the Scout agent are still needed for Scout plugins to be executed by the SolarWinds Snap Agent.
+
 ### Upgrade cron-based scout to scoutd
 
 If not done already, you need to upgrade your cron-based scout installation to the newest version.
@@ -107,6 +110,13 @@ Note: When choosing this option, you need to manually configure the Snap PSM col
     ```
 
 ### Manual
+
+A concept for the migration steps is to replace the long-living ScoutD daemon process that periodically calls scout-client with the SWISnap service (which will do the same but in much more effective and configurable way).
+
+Scout-client is a poller/collector that loops over all the Ruby plugins. When used with ScoutD, it not only runs the plugins scripts but also asks PSM API for them every time. It also asks for configuration changes (new scripts or host attributes). 
+After the migration, the PSM account key (API token) will no longer be used as all the needed plugins are downloaded and saved locally along with their configuration files.  
+
+Follow the steps as described below (in that order) to perform a migration manually on your host.
 
 #### Deactivate ScoutD
 
