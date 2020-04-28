@@ -5,20 +5,18 @@ Migration needs to be performed on each monitored server.
 
 ## Table of contents
 
-1. [Prerequisites](#prerequisites)
-    - [Upgrading from cron-based agent to scoutd](#upgrade-cron-based-agent-to-scoutd)
+- [PSM -> AppOptics migration toolset](#psm---appoptics-migration-toolset)
+  - [Table of contents](#table-of-contents)
+  - [Prerequisites](#prerequisites)
+    - [Upgrade cron-based scout to scoutd](#upgrade-cron-based-scout-to-scoutd)
     - [Upgrade scoutd](#upgrade-scoutd)
     - [Upgrade AppOptics Host Agent to SolarWinds Snap Agent](#upgrade-appoptics-host-agent-to-solarwinds-snap-agent)
-2. [Migration](#migration-script)
+  - [Migration](#migration)
     - [Basic](#basic)
     - [Advanced concepts](#advanced-concepts)
     - [Using configuration management](#using-configuration-management)
-        - [Ansible](#ansible)
-        - [Chef](#chef)
-        - [Puppet](#puppet)
-3. [SolarWinds Snap Agent configuration](#solarwinds-snap-agent-configuration)
-4. [Further reading](#further-reading)
-
+    - [Manual](#manual)
+  - [Further reading](#further-reading)
 
 ## Prerequisites
 
@@ -63,49 +61,54 @@ Note: When choosing this option, you need to manually configure the Snap PSM col
 ### Using configuration management
 
 #### Ansible
-```
-# Checkout git repository
-- git:
-  repo: git@github.com:pingdomserver/scout-ao.git
-  dest: /tmp/pingdomserver/scout-ao
 
-# Run migration script
-- name: run AO migration script
-  command: ruby /tmp/pingdomserver/scout-ao/migrate.rb
-  become: true
-```
+    ```
+    # Checkout git repository
+    - git:
+      repo: git@github.com:pingdomserver/scout-ao.git
+      dest: /tmp/pingdomserver/scout-ao
+    
+    # Run migration script
+    - name: run AO migration script
+      command: ruby /tmp/pingdomserver/scout-ao/migrate.rb
+      become: true
+    ```
+    
 #### Chef
-```
-# Checkout git repository
-git '/tmp/pingdomserver/scout-ao' do
-  repository 'git@github.com:pingdomserver/scout-ao.git'
-  revision 'master'
-  action :sync
-end
 
-# Run migration script
-execute 'run AO migration script' do
-  command 'ruby /tmp/pingdomserver/scout-ao/migrate.rb'
-end
-```
+    ```
+    # Checkout git repository
+    git '/tmp/pingdomserver/scout-ao' do
+      repository 'git@github.com:pingdomserver/scout-ao.git'
+      revision 'master'
+      action :sync
+    end
+    
+    # Run migration script
+    execute 'run AO migration script' do
+      command 'ruby /tmp/pingdomserver/scout-ao/migrate.rb'
+    end
+    ```
+    
 #### Puppet
-```
-# Checkout git repository
-vcsrepo { '/tmp/pingdomserver/scout-ao':
-  ensure   => present,
-  provider => git,
-  source   => 'git@github.com:pingdomserver/scout-ao.git',
-}
 
-# Run migration script
-exec { 'run AO migration script':
-  command => 'ruby /tmp/pingdomserver/scout-ao/migrate.rb'
-}
-```
+    ```
+    # Checkout git repository
+    vcsrepo { '/tmp/pingdomserver/scout-ao':
+      ensure   => present,
+      provider => git,
+      source   => 'git@github.com:pingdomserver/scout-ao.git',
+    }
+    
+    # Run migration script
+    exec { 'run AO migration script':
+      command => 'ruby /tmp/pingdomserver/scout-ao/migrate.rb'
+    }
+    ```
 
 ### Manual
 
-#### Assure prerequisites
+#### Deactivate ScoutD
 
 1. Make sure you have [upgraded from cron-based agent to scoutd](#upgrade-cron-based-agent-to-scoutd)
 
@@ -120,14 +123,18 @@ exec { 'run AO migration script':
     pgrep -g ${SCOUTD_PID} | xargs kill
     ```
 
-0. Backup Scout "history file":
+#### Backup
+
+1. Backup Scout "history file" - ie. a config/data file that contains your PSM token:
 
     ```shell script
     HISTORY_FILE="/var/lib/scoutd/client_history.yaml"
     [ -f #{HISTORY_FILE} ] && mv -f #{HISTORY_FILE} #{HISTORY_FILE}.bak
     ```
 
-0. Download PSM plugins
+#### Prepare data
+
+1. Download PSM plugins
 
     TODO: Document PSM plugins downloading
 
@@ -143,13 +150,9 @@ exec { 'run AO migration script':
     chmod -Rv g+w /var/lib/scoutd
     ```
 
-0. Stop SWISnap
+#### Setup SolarWinds Snap Agent
 
-    ```shell script
-    service swisnapd stop
-    ```
-
-0. Configure SWISnap PSM plugin
+1. Configure SWISnap PSM plugin
 
     Edit the following plugin config template and save as /opt/SolarWinds/Snap/etc/plugins.d/psm.yaml
     ```yaml
@@ -302,7 +305,9 @@ exec { 'run AO migration script':
     service swisnapd restart
     ```
 
-0. As the very last step, you need to enable collector(s) on AppOpctics website:
+#### Enable plugins in AppOptics UI
+
+1. As the very last step, you need to enable collector(s) on AppOpctics website:
     * PSM plugins/scripts: https://my.appoptics.com/infrastructure/integrations/psm
     * StatsD: https://my.appoptics.com/infrastructure/integrations/statsd
 
